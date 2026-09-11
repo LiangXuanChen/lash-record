@@ -17,10 +17,6 @@ function loadSettings() {
 }
 
 let settings = loadSettings();
-let draggedRow = null;
-let draggedKey = null;
-let touchDraggingRow = null;
-let touchDraggingKey = null;
 
 function saveSettings() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
@@ -34,6 +30,89 @@ function saveOrderFromDom(key) {
     .map(row => row.dataset.value);
 
   saveSettings();
+}
+
+function enablePhysicalDrag(row, handle, list, key) {
+  let placeholder = null;
+  let startRect = null;
+  let pointerOffsetY = 0;
+  let dragging = false;
+
+  const moveRow = event => {
+    if (!dragging) return;
+    event.preventDefault();
+
+    row.style.top = `${event.clientY - pointerOffsetY}px`;
+
+    const siblings = Array.from(list.querySelectorAll('.setting-item:not(.dragging)'));
+    let inserted = false;
+
+    for (const sibling of siblings) {
+      const rect = sibling.getBoundingClientRect();
+      if (event.clientY < rect.top + rect.height / 2) {
+        list.insertBefore(placeholder, sibling);
+        inserted = true;
+        break;
+      }
+    }
+
+    if (!inserted) list.appendChild(placeholder);
+  };
+
+  const endDrag = event => {
+    if (!dragging) return;
+    dragging = false;
+
+    if (handle.hasPointerCapture?.(event.pointerId)) {
+      handle.releasePointerCapture(event.pointerId);
+    }
+
+    row.classList.remove('dragging');
+    row.removeAttribute('style');
+
+    if (placeholder?.parentNode) {
+      placeholder.parentNode.insertBefore(row, placeholder);
+      placeholder.remove();
+    }
+
+    saveOrderFromDom(key);
+
+    document.removeEventListener('pointermove', moveRow, { passive: false });
+    document.removeEventListener('pointerup', endDrag);
+    document.removeEventListener('pointercancel', endDrag);
+  };
+
+  handle.addEventListener('pointerdown', event => {
+    if (event.button !== undefined && event.button !== 0) return;
+    event.preventDefault();
+
+    startRect = row.getBoundingClientRect();
+    pointerOffsetY = event.clientY - startRect.top;
+    dragging = true;
+
+    placeholder = document.createElement('div');
+    placeholder.className = 'drag-placeholder';
+    placeholder.style.height = `${startRect.height}px`;
+
+    list.insertBefore(placeholder, row);
+
+    row.classList.add('dragging');
+    row.style.position = 'fixed';
+    row.style.left = `${startRect.left}px`;
+    row.style.top = `${startRect.top}px`;
+    row.style.width = `${startRect.width}px`;
+    row.style.height = `${startRect.height}px`;
+    row.style.margin = '0';
+    row.style.zIndex = '9999';
+    row.style.pointerEvents = 'none';
+
+    document.body.appendChild(row);
+    handle.setPointerCapture?.(event.pointerId);
+
+    document.addEventListener('pointermove', moveRow, { passive: false });
+    document.addEventListener('pointerup', endDrag);
+    document.addEventListener('pointercancel', endDrag);
+  });
 }
 
 function renderList(key) {
@@ -54,7 +133,6 @@ function renderList(key) {
   items.forEach((item, index) => {
     const row = document.createElement('div');
     row.className = 'setting-item';
-    row.draggable = true;
     row.dataset.value = item;
 
     const handle = document.createElement('button');
@@ -78,64 +156,7 @@ function renderList(key) {
       renderList(key);
     });
 
-    row.addEventListener('dragstart', event => {
-      draggedRow = row;
-      draggedKey = key;
-      row.classList.add('dragging');
-      event.dataTransfer.effectAllowed = 'move';
-      event.dataTransfer.setData('text/plain', item);
-    });
-
-    row.addEventListener('dragend', () => {
-      row.classList.remove('dragging');
-      document.querySelectorAll('.setting-item.drag-over').forEach(el => el.classList.remove('drag-over'));
-      if (draggedKey) saveOrderFromDom(draggedKey);
-      draggedRow = null;
-      draggedKey = null;
-    });
-
-    row.addEventListener('dragover', event => {
-      if (!draggedRow || draggedKey !== key || draggedRow === row) return;
-      event.preventDefault();
-      event.dataTransfer.dropEffect = 'move';
-
-      const rect = row.getBoundingClientRect();
-      const insertAfter = event.clientY > rect.top + rect.height / 2;
-      list.insertBefore(draggedRow, insertAfter ? row.nextSibling : row);
-    });
-
-    handle.addEventListener('pointerdown', event => {
-      if (event.pointerType === 'mouse') return;
-      event.preventDefault();
-      touchDraggingRow = row;
-      touchDraggingKey = key;
-      row.classList.add('dragging', 'touch-dragging');
-      handle.setPointerCapture(event.pointerId);
-    });
-
-    handle.addEventListener('pointermove', event => {
-      if (!touchDraggingRow || touchDraggingKey !== key) return;
-      event.preventDefault();
-
-      const target = document.elementFromPoint(event.clientX, event.clientY)?.closest('.setting-item');
-      if (!target || target === touchDraggingRow || target.parentElement !== list) return;
-
-      const rect = target.getBoundingClientRect();
-      const insertAfter = event.clientY > rect.top + rect.height / 2;
-      list.insertBefore(touchDraggingRow, insertAfter ? target.nextSibling : target);
-    });
-
-    const finishTouchDrag = event => {
-      if (!touchDraggingRow || touchDraggingKey !== key) return;
-      if (handle.hasPointerCapture?.(event.pointerId)) handle.releasePointerCapture(event.pointerId);
-      touchDraggingRow.classList.remove('dragging', 'touch-dragging');
-      saveOrderFromDom(key);
-      touchDraggingRow = null;
-      touchDraggingKey = null;
-    };
-
-    handle.addEventListener('pointerup', finishTouchDrag);
-    handle.addEventListener('pointercancel', finishTouchDrag);
+    enablePhysicalDrag(row, handle, list, key);
 
     row.append(handle, name, remove);
     list.appendChild(row);
