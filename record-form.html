@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>美睫紀錄表</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <div style="margin-bottom:12px"><a href="index.html" style="color:#6f625c;text-decoration:none;font-size:14px">← 返回 Dashboard</a></div>
+    <div class="record-header">
+      <h1 class="record-title">美睫紀錄表</h1>
+      <div class="dashed-separator"></div>
+      <div class="customer-row">
+        <span class="customer-label">姓名：</span>
+        <span id="customerName" class="customer-name">王小美</span>
+      </div>
+      <div class="dashed-separator"></div>
+    </div>
+    <p class="hint">Prototype v24：日期改用民國年顯示與選擇。</p>
+
+    <div class="preset-title">款式預設</div>
+    <div class="preset-grid">
+      <button class="preset active" data-style="cute"><span class="preset-name">可愛型</span><span class="preset-count">3 個範圍</span></button>
+      <button class="preset" data-style="sexy"><span class="preset-name">性感型</span><span class="preset-count">3 個範圍</span></button>
+      <button class="preset" data-style="glamour"><span class="preset-name">華麗型</span><span class="preset-count">2 個範圍</span></button>
+      <button class="preset" data-style="innocent"><span class="preset-name">無辜型</span><span class="preset-count">4 個範圍</span></button>
+    </div>
+
+    <div class="eyes-grid">
+      <section class="eye-panel">
+        <div class="eye-title">左眼</div>
+        <div id="leftEyeSvg" class="eye-svg"></div>
+        <div class="range-order-hint">*範圍由左到右排序</div>
+        <div id="leftSegments" class="segments"></div>
+        <button id="addLeft" class="add-eye">＋ 新增左眼區域</button>
+      </section>
+      <section class="eye-panel">
+        <div class="eye-title">右眼</div>
+        <div id="rightEyeSvg" class="eye-svg"></div>
+        <div class="range-order-hint">*範圍由左到右排序</div>
+        <div id="rightSegments" class="segments"></div>
+        <button id="addRight" class="add-eye">＋ 新增右眼區域</button>
+      </section>
+    </div>
+
+    <div class="record-table">
+      <div class="form-row">
+        <div class="form-label">日期</div>
+        <div class="form-input">
+          <div class="roc-date-wrap">
+            <input type="text" id="rocDateDisplay" class="roc-date-input" readonly aria-label="日期" placeholder="請選擇日期">
+            <button type="button" id="rocDateButton" class="calendar-button" aria-label="選擇日期">
+              <svg class="calendar-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 2v3M17 2v3M4.5 8.5h15M6 4.5h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-12a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8 12h2M12 12h2M16 12h0M8 16h2M12 16h2M16 16h0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </button>
+            <div id="rocCalendar" class="roc-calendar" hidden>
+              <div class="calendar-header">
+                <button type="button" id="prevMonth" class="calendar-nav">‹</button>
+                <div id="calendarTitle" class="calendar-title"></div>
+                <button type="button" id="nextMonth" class="calendar-nav">›</button>
+              </div>
+              <div class="calendar-week"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>
+              <div id="calendarDays" class="calendar-days"></div>
+              <button type="button" id="todayButton" class="today-button">今天</button>
+            </div>
+          </div>
+        </div>
+        <div class="form-label">接睫樣式</div>
+        <div class="form-input"><input type="text" id="lashStyleText" placeholder="請輸入接睫樣式"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-label">睫毛種類</div>
+        <div class="form-input"><input type="text" id="lashType" placeholder="請輸入睫毛種類"></div>
+        <div class="form-label">金額</div>
+        <div class="form-input"><input type="text" id="amount" inputmode="decimal" placeholder="請輸入金額"></div>
+      </div>
+      <div class="form-row full-row">
+        <div class="form-label">消費內容 / 備註</div>
+        <div class="form-input"><textarea id="note" placeholder="請輸入消費內容或備註"></textarea></div>
+      </div>
+    </div>
+
+    <div class="actions"><button id="save" class="action primary">儲存施作紀錄（測試）</button></div>
+    <pre id="output">尚未儲存</pre>
+  </div>
+</div>
+<script src="script.js"></script>
+<script>
+  const customerParams = new URLSearchParams(location.search);
+  const customerName = customerParams.get('name');
+  if(customerName){ document.getElementById('customerName').textContent = customerName; }
+</script>
+</body>
+</html>
