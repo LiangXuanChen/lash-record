@@ -42,7 +42,9 @@ function enablePhysicalDrag(row, handle, list, key) {
     if (!dragging) return;
     event.preventDefault();
 
-    row.style.top = `${event.clientY - pointerOffsetY}px`;
+    const targetTop = event.clientY - pointerOffsetY;
+    const listRect = list.getBoundingClientRect();
+    row.style.transform = `translateY(${targetTop - startRect.top}px)`;
 
     const siblings = Array.from(list.querySelectorAll('.setting-item:not(.dragging)'));
     let inserted = false;
@@ -57,6 +59,9 @@ function enablePhysicalDrag(row, handle, list, key) {
     }
 
     if (!inserted) list.appendChild(placeholder);
+
+    // 拖曳列始終留在原本的 item-list 中，避免脫離 Grid 後寬度／位置跑版。
+    row.style.left = `${listRect.left - startRect.left}px`;
   };
 
   const endDrag = event => {
@@ -67,13 +72,13 @@ function enablePhysicalDrag(row, handle, list, key) {
       handle.releasePointerCapture(event.pointerId);
     }
 
-    row.classList.remove('dragging');
-    row.removeAttribute('style');
-
     if (placeholder?.parentNode) {
       placeholder.parentNode.insertBefore(row, placeholder);
       placeholder.remove();
     }
+
+    row.classList.remove('dragging');
+    row.removeAttribute('style');
 
     saveOrderFromDom(key);
 
@@ -97,16 +102,16 @@ function enablePhysicalDrag(row, handle, list, key) {
     list.insertBefore(placeholder, row);
 
     row.classList.add('dragging');
-    row.style.position = 'fixed';
-    row.style.left = `${startRect.left}px`;
-    row.style.top = `${startRect.top}px`;
-    row.style.width = `${startRect.width}px`;
+    row.style.position = 'absolute';
+    row.style.left = '0';
+    row.style.top = `${startRect.top - list.getBoundingClientRect().top}px`;
+    row.style.width = '100%';
     row.style.height = `${startRect.height}px`;
     row.style.margin = '0';
-    row.style.zIndex = '9999';
+    row.style.zIndex = '20';
     row.style.pointerEvents = 'none';
 
-    document.body.appendChild(row);
+    // 不再把 row append 到 body，讓它保留在原本設定清單的排版環境中。
     handle.setPointerCapture?.(event.pointerId);
 
     document.addEventListener('pointermove', moveRow, { passive: false });
