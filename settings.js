@@ -1,10 +1,10 @@
 const STORAGE_KEY = 'lashRecordSettings';
 
 const defaultSettings = {
-  lashStyles: ['可愛型', '性感型', '華麗型', '無辜型'],
-  lashTypes: ['YY 毛', '山茶花', '扁毛'],
-  curls: ['J', 'B', 'C', 'CC', 'D'],
-  lengths: ['8 mm', '9 mm', '10 mm', '11 mm', '12 mm', '13 mm']
+  lashStyles: ['性感型', '無辜型', '華麗型', '可愛型'],
+  lashTypes: ['松風', '赫本', '芭比'],
+  curls: ['J', 'JC', 'C', 'SC', 'CC', 'L', 'LD'],
+  lengths: ['7 mm', '8 mm', '9 mm', '11 mm', '10 mm', '12 mm', '13 mm']
 };
 
 function loadSettings() {
