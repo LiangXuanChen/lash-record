@@ -45,62 +45,55 @@
     });
   };
 
-  function setRemoveButtonsVisibility(){
-    const isSexy = selectedStyle === 'sexy';
+  function forceHide(button){
+    if(!button) return;
+    button.hidden = true;
+    button.style.setProperty('display', 'none', 'important');
+  }
 
-    document
-      .querySelectorAll('#leftSegments .remove, #rightSegments .remove')
-      .forEach(button => {
-        button.hidden = isSexy;
-        button.style.display = isSexy ? 'none' : '';
-      });
+  function restoreButton(button){
+    if(!button) return;
+    button.hidden = false;
+    button.style.removeProperty('display');
   }
 
   function updateSexyControls(){
     const isSexy = selectedStyle === 'sexy';
 
-    setRemoveButtonsVisibility();
+    document
+      .querySelectorAll('#leftSegments .remove, #rightSegments .remove')
+      .forEach(button => {
+        if(isSexy) forceHide(button);
+        else restoreButton(button);
+      });
 
     const addLeft = document.getElementById('addLeft');
     const addRight = document.getElementById('addRight');
 
-    if(addLeft){
-      addLeft.hidden = isSexy;
-      addLeft.style.display = isSexy ? 'none' : '';
-    }
-
-    if(addRight){
-      addRight.hidden = isSexy;
-      addRight.style.display = isSexy ? 'none' : '';
+    if(isSexy){
+      forceHide(addLeft);
+      forceHide(addRight);
+    }else{
+      restoreButton(addLeft);
+      restoreButton(addRight);
     }
   }
 
   /*
-    renderEye 會重新建立每個「範圍」卡片，包含「刪除此區」按鈕。
-    因此性感型時，每次 renderEye 完成後都再次隱藏刪除按鈕，
-    避免後續 record-settings.js 再次 renderAll() 時把按鈕重新建立出來。
+    renderEye 會重新建立每個範圍卡片，因此每次 render 完成後
+    都重新套用性感型的按鈕顯示規則。
   */
   const originalRenderEye = renderEye;
 
   renderEye = function(side, segments){
     originalRenderEye(side, segments);
-
-    if(selectedStyle === 'sexy'){
-      const editor = document.getElementById(side + 'Segments');
-      if(editor){
-        editor.querySelectorAll('.remove').forEach(button => {
-          button.hidden = true;
-          button.style.display = 'none';
-        });
-      }
-    }
+    updateSexyControls();
   };
 
   const sexyButton = document.querySelector('.preset[data-style="sexy"]');
 
   if(sexyButton){
     sexyButton.addEventListener('click', ()=>{
-      // 原本預設事件執行後，只針對性感型改為固定兩區。
       leftSegments = createDefaultSegments(2);
       rightSegments = createDefaultSegments(2);
       renderAll();
@@ -108,10 +101,24 @@
     });
   }
 
-  // 切換到其他款式時，恢復原本可新增／刪除的 UI。
   document
     .querySelectorAll('.preset:not([data-style="sexy"])')
     .forEach(button => {
       button.addEventListener('click', updateSexyControls);
     });
+
+  /*
+    record-settings.js 或其他程式若再次重建區域卡片，
+    MutationObserver 會立即再次隱藏性感型的「刪除此區」。
+  */
+  ['leftSegments', 'rightSegments'].forEach(id => {
+    const target = document.getElementById(id);
+    if(!target) return;
+
+    new MutationObserver(()=>{
+      if(selectedStyle === 'sexy'){
+        target.querySelectorAll('.remove').forEach(forceHide);
+      }
+    }).observe(target, { childList:true, subtree:true });
+  });
 })();
