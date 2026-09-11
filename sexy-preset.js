@@ -7,6 +7,7 @@
     - 性感型隱藏刪除與新增區域按鈕
     其他預設型不受影響。
   */
+
   const originalDrawEye = drawEye;
 
   drawEye = function(side, segments){
@@ -29,7 +30,7 @@
       divider.setAttribute('x2', splitX);
     }
 
-    // 讓兩個範圍的文字也跟著實際區域置中，而不是仍以 1/2 等分顯示。
+    // 讓兩個範圍的文字跟著實際區域置中。
     const centers = [
       left + (splitX - left) / 2,
       splitX + (right - splitX) / 2
@@ -38,33 +39,65 @@
     svg.querySelectorAll('.label').forEach((el, index)=>{
       if(centers[index] !== undefined) el.setAttribute('x', centers[index]);
     });
+
     svg.querySelectorAll('.length').forEach((el, index)=>{
       if(centers[index] !== undefined) el.setAttribute('x', centers[index]);
     });
   };
 
-  function updateSexyControls(){
+  function setRemoveButtonsVisibility(){
     const isSexy = selectedStyle === 'sexy';
 
-    document.querySelectorAll('#leftSegments .remove, #rightSegments .remove')
+    document
+      .querySelectorAll('#leftSegments .remove, #rightSegments .remove')
       .forEach(button => {
         button.hidden = isSexy;
         button.style.display = isSexy ? 'none' : '';
       });
+  }
+
+  function updateSexyControls(){
+    const isSexy = selectedStyle === 'sexy';
+
+    setRemoveButtonsVisibility();
 
     const addLeft = document.getElementById('addLeft');
     const addRight = document.getElementById('addRight');
+
     if(addLeft){
       addLeft.hidden = isSexy;
       addLeft.style.display = isSexy ? 'none' : '';
     }
+
     if(addRight){
       addRight.hidden = isSexy;
       addRight.style.display = isSexy ? 'none' : '';
     }
   }
 
+  /*
+    renderEye 會重新建立每個「範圍」卡片，包含「刪除此區」按鈕。
+    因此性感型時，每次 renderEye 完成後都再次隱藏刪除按鈕，
+    避免後續 record-settings.js 再次 renderAll() 時把按鈕重新建立出來。
+  */
+  const originalRenderEye = renderEye;
+
+  renderEye = function(side, segments){
+    originalRenderEye(side, segments);
+
+    if(selectedStyle === 'sexy'){
+      const editor = document.getElementById(side + 'Segments');
+      if(editor){
+        editor.querySelectorAll('.remove').forEach(button => {
+          button.hidden = true;
+          button.style.display = 'none';
+        });
+      }
+    }
+  };
+
   const sexyButton = document.querySelector('.preset[data-style="sexy"]');
+
   if(sexyButton){
     sexyButton.addEventListener('click', ()=>{
       // 原本預設事件執行後，只針對性感型改為固定兩區。
@@ -76,7 +109,9 @@
   }
 
   // 切換到其他款式時，恢復原本可新增／刪除的 UI。
-  document.querySelectorAll('.preset:not([data-style="sexy"])').forEach(button=>{
-    button.addEventListener('click', updateSexyControls);
-  });
+  document
+    .querySelectorAll('.preset:not([data-style="sexy"])')
+    .forEach(button => {
+      button.addEventListener('click', updateSexyControls);
+    });
 })();
