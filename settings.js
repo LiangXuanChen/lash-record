@@ -12,21 +12,26 @@ const defaultSettings = {
   lengths: ['7 mm', '8 mm', '9 mm', '11 mm', '10 mm', '12 mm', '13 mm']
 };
 
+function cloneDefaultSettings() {
+  return JSON.parse(JSON.stringify(defaultSettings));
+}
+
 function loadSettings() {
   try {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if (!saved) return structuredClone(defaultSettings);
+    if (!saved) return cloneDefaultSettings();
     return {
       ...defaultSettings,
       ...saved,
       lashColors: { ...defaultSettings.lashColors, ...(saved.lashColors || {}) }
     };
   } catch {
-    return structuredClone(defaultSettings);
+    return cloneDefaultSettings();
   }
 }
 
 let settings = loadSettings();
+const expandedLashTypes = new Set();
 
 function saveSettings() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
@@ -129,10 +134,26 @@ function renderLashTypeList() {
 
     const top = document.createElement('div');
     top.className = 'lash-type-top';
+
     const handle = makeDragHandle(item);
+
+    const nameWrap = document.createElement('div');
+    nameWrap.className = 'lash-type-name-wrap';
+
     const name = document.createElement('div');
     name.className = 'item-name';
     name.textContent = item;
+
+    const colors = settings.lashColors[item] || [];
+    const toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.className = 'color-toggle';
+    toggle.setAttribute('aria-label', `${expandedLashTypes.has(item) ? '收合' : '展開'} ${item} 顏色`);
+    toggle.setAttribute('aria-expanded', expandedLashTypes.has(item) ? 'true' : 'false');
+    toggle.innerHTML = '<span class="toggle-arrow" aria-hidden="true">⌄</span>';
+
+    nameWrap.append(name, toggle);
+
     const remove = document.createElement('button');
     remove.type = 'button';
     remove.className = 'delete-btn';
@@ -140,60 +161,89 @@ function renderLashTypeList() {
     remove.addEventListener('click', () => {
       settings.lashTypes.splice(index, 1);
       delete settings.lashColors[item];
+      expandedLashTypes.delete(item);
       saveSettings();
       renderLashTypeList();
     });
-    top.append(handle, name, remove);
+
+    top.append(handle, nameWrap, remove);
 
     const colorArea = document.createElement('div');
     colorArea.className = 'color-area';
+    colorArea.hidden = !expandedLashTypes.has(item);
+
     const colorTitle = document.createElement('div');
     colorTitle.className = 'color-title';
-    colorTitle.textContent = '顏色';
+    colorTitle.textContent = `顏色（${colors.length}）`;
+
     const colorList = document.createElement('div');
     colorList.className = 'color-list';
-    const colors = settings.lashColors[item] || [];
+
     colors.forEach((color, colorIndex) => {
       const chip = document.createElement('div');
       chip.className = 'color-chip';
+
       const colorName = document.createElement('span');
       colorName.textContent = color;
+
       const colorDelete = document.createElement('button');
       colorDelete.type = 'button';
       colorDelete.textContent = '×';
       colorDelete.setAttribute('aria-label', `刪除 ${color}`);
       colorDelete.addEventListener('click', () => {
         settings.lashColors[item].splice(colorIndex, 1);
+        expandedLashTypes.add(item);
         saveSettings();
         renderLashTypeList();
       });
+
       chip.append(colorName, colorDelete);
       colorList.appendChild(chip);
     });
 
     const colorAdd = document.createElement('div');
     colorAdd.className = 'color-add';
+
     const colorInput = document.createElement('input');
     colorInput.type = 'text';
     colorInput.placeholder = '輸入新的顏色';
+
     const colorButton = document.createElement('button');
     colorButton.type = 'button';
     colorButton.textContent = '＋ 新增顏色';
+
     const addColor = () => {
       const value = colorInput.value.trim();
       if (!value) return;
       settings.lashColors[item] ||= [];
       if (settings.lashColors[item].some(c => c.toLowerCase() === value.toLowerCase())) return;
       settings.lashColors[item].push(value);
+      expandedLashTypes.add(item);
       saveSettings();
       renderLashTypeList();
     };
+
     colorButton.addEventListener('click', addColor);
     colorInput.addEventListener('keydown', event => {
-      if (event.key === 'Enter') { event.preventDefault(); addColor(); }
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        addColor();
+      }
     });
+
     colorAdd.append(colorInput, colorButton);
     colorArea.append(colorTitle, colorList, colorAdd);
+
+    toggle.addEventListener('click', () => {
+      const willExpand = !expandedLashTypes.has(item);
+      if (willExpand) expandedLashTypes.add(item);
+      else expandedLashTypes.delete(item);
+
+      colorArea.hidden = !willExpand;
+      toggle.setAttribute('aria-expanded', willExpand ? 'true' : 'false');
+      toggle.setAttribute('aria-label', `${willExpand ? '收合' : '展開'} ${item} 顏色`);
+    });
+
     row.append(top, colorArea);
     list.appendChild(row);
     enablePhysicalDrag(row, handle, list, 'lashTypes');
@@ -201,11 +251,16 @@ function renderLashTypeList() {
 }
 
 function renderList(key) {
-  if (key === 'lashTypes') { renderLashTypeList(); return; }
+  if (key === 'lashTypes') {
+    renderLashTypeList();
+    return;
+  }
+
   const list = document.getElementById(`${key}List`);
   if (!list) return;
   const items = settings[key] || [];
   list.innerHTML = '';
+
   if (!items.length) {
     const empty = document.createElement('div');
     empty.className = 'empty';
@@ -213,14 +268,18 @@ function renderList(key) {
     list.appendChild(empty);
     return;
   }
+
   items.forEach((item, index) => {
     const row = document.createElement('div');
     row.className = 'setting-item';
     row.dataset.value = item;
+
     const handle = makeDragHandle(item);
+
     const name = document.createElement('div');
     name.className = 'item-name';
     name.textContent = item;
+
     const remove = document.createElement('button');
     remove.type = 'button';
     remove.className = 'delete-btn';
@@ -230,6 +289,7 @@ function renderList(key) {
       saveSettings();
       renderList(key);
     });
+
     enablePhysicalDrag(row, handle, list, key);
     row.append(handle, name, remove);
     list.appendChild(row);
@@ -239,10 +299,19 @@ function renderList(key) {
 function addItem(key) {
   const input = document.getElementById(`${key}Input`);
   if (!input) return;
+
   let value = input.value.trim();
   if (!value) return;
-  if (key === 'lengths' && /^\d+(\.\d+)?$/.test(value)) value = `${value} mm`;
-  if (settings[key].some(item => item.toLowerCase() === value.toLowerCase())) { input.focus(); return; }
+
+  if (key === 'lengths' && /^\d+(\.\d+)?$/.test(value)) {
+    value = `${value} mm`;
+  }
+
+  if (settings[key].some(item => item.toLowerCase() === value.toLowerCase())) {
+    input.focus();
+    return;
+  }
+
   settings[key].push(value);
   if (key === 'lashTypes') settings.lashColors[value] = [];
   saveSettings();
