@@ -47,12 +47,21 @@
     const isSexy = selectedStyle === 'sexy';
 
     document.querySelectorAll('#leftSegments .remove, #rightSegments .remove')
-      .forEach(button => button.hidden = isSexy);
+      .forEach(button => {
+        button.hidden = isSexy;
+        button.style.display = isSexy ? 'none' : '';
+      });
 
     const addLeft = document.getElementById('addLeft');
     const addRight = document.getElementById('addRight');
-    if(addLeft) addLeft.hidden = isSexy;
-    if(addRight) addRight.hidden = isSexy;
+    if(addLeft){
+      addLeft.hidden = isSexy;
+      addLeft.style.display = isSexy ? 'none' : '';
+    }
+    if(addRight){
+      addRight.hidden = isSexy;
+      addRight.style.display = isSexy ? 'none' : '';
+    }
   }
 
   const sexyButton = document.querySelector('.preset[data-style="sexy"]');
