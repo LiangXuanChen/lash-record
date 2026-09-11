@@ -9,7 +9,9 @@ const defaultSettings = {
     '芭比': ['black', 'dark mocha']
   },
   curls: ['J', 'JC', 'C', 'SC', 'CC', 'L', 'LD'],
-  lengths: ['7 mm', '8 mm', '9 mm', '11 mm', '10 mm', '12 mm', '13 mm']
+  lengths: ['7 mm', '8 mm', '9 mm', '11 mm', '10 mm', '12 mm', '13 mm'],
+  upperLashCounts: ['80', '90', '100', '110', '120', '130', '140'],
+  lowerLashCounts: ['20', '30']
 };
 
 function cloneDefaultSettings() {
@@ -307,6 +309,11 @@ function addItem(key) {
     value = `${value} mm`;
   }
 
+  if ((key === 'upperLashCounts' || key === 'lowerLashCounts') && !/^\d+$/.test(value)) {
+    input.focus();
+    return;
+  }
+
   if (settings[key].some(item => item.toLowerCase() === value.toLowerCase())) {
     input.focus();
     return;
@@ -320,7 +327,7 @@ function addItem(key) {
   input.focus();
 }
 
-['lashStyles', 'lashTypes', 'curls', 'lengths'].forEach(renderList);
+['lashStyles', 'lashTypes', 'curls', 'lengths', 'upperLashCounts', 'lowerLashCounts'].forEach(renderList);
 
 document.querySelectorAll('[data-add]').forEach(button => {
   button.addEventListener('click', () => addItem(button.dataset.add));
