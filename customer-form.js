@@ -1,9 +1,14 @@
 const params = new URLSearchParams(location.search);
 const editingName = params.get("name");
 const customers = JSON.parse(localStorage.getItem("lashCustomers") || "[]");
+const sampleCustomers = [
+  { name:"王小美", phone:"0912-345-678" },
+  { name:"陳佳佳", phone:"0933-120-886" },
+  { name:"林安安", phone:"0988-521-307" }
+];
 
 if(editingName){
-  const customer = customers.find(x => x.name === editingName);
+  const customer = customers.find(x => x.name === editingName) || sampleCustomers.find(x => x.name === editingName);
   if(customer){
     document.getElementById("name").value = customer.name || "";
     document.getElementById("phone").value = customer.phone || "";
