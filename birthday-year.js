@@ -24,12 +24,14 @@
     const existing=parseRocDate(display.value);
     if(existing){selectedDate=existing;viewDate=new Date(existing);}
 
+    const selectStyle='height:34px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--text);padding:0 8px;font-family:inherit;font-size:13px;font-weight:700;outline:none;';
+
     let yearSelect=document.getElementById('birthdayRocYear');
     if(!yearSelect){
       yearSelect=document.createElement('select');
       yearSelect.id='birthdayRocYear';
       yearSelect.setAttribute('aria-label','選擇民國年');
-      yearSelect.style.cssText='height:34px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--text);padding:0 8px;font-family:inherit;font-size:13px;font-weight:700;outline:none;';
+      yearSelect.style.cssText=selectStyle;
       head.insertBefore(yearSelect,title);
     }
 
@@ -42,13 +44,32 @@
       yearSelect.appendChild(option);
     }
 
+    let monthSelect=document.getElementById('birthdayMonth');
+    if(!monthSelect){
+      monthSelect=document.createElement('select');
+      monthSelect.id='birthdayMonth';
+      monthSelect.setAttribute('aria-label','選擇月份');
+      monthSelect.style.cssText=selectStyle;
+      head.insertBefore(monthSelect,title);
+    }
+
+    monthSelect.innerHTML='';
+    for(let month=1;month<=12;month++){
+      const option=document.createElement('option');
+      option.value=String(month-1);
+      option.textContent=`${month} 月`;
+      monthSelect.appendChild(option);
+    }
+
+    title.style.display='none';
+
     const roc=d=>`${d.getFullYear()-1911}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}`;
 
     function render(){
       const y=viewDate.getFullYear();
       const m=viewDate.getMonth();
       yearSelect.value=String(y-1911);
-      title.textContent=`${String(m+1).padStart(2,'0')} 月`;
+      monthSelect.value=String(m);
       days.innerHTML='';
       const first=new Date(y,m,1).getDay();
       const count=new Date(y,m+1,0).getDate();
@@ -91,6 +112,7 @@
     prev.onclick=event=>{event.stopPropagation();viewDate=new Date(viewDate.getFullYear(),viewDate.getMonth()-1,1);render();};
     next.onclick=event=>{event.stopPropagation();viewDate=new Date(viewDate.getFullYear(),viewDate.getMonth()+1,1);render();};
     yearSelect.onchange=event=>{event.stopPropagation();viewDate=new Date(Number(yearSelect.value)+1911,viewDate.getMonth(),1);render();};
+    monthSelect.onchange=event=>{event.stopPropagation();viewDate=new Date(viewDate.getFullYear(),Number(monthSelect.value),1);render();};
     today.onclick=event=>{
       event.stopPropagation();
       selectedDate=new Date();
