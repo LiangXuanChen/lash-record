@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Apple Pencil 延遲測試</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC",sans-serif;background:#f4efeb;color:#302a27}body{padding:18px}.wrap{max-width:1000px;margin:auto}.card{background:#fffdfb;border:1px solid #e4ddd8;border-radius:18px;padding:18px}.title{font-size:22px;font-weight:800;margin-bottom:8px}.desc{font-size:14px;line-height:1.7;color:#756a65;margin-bottom:14px}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}.stat{background:#f8f4f1;border-radius:12px;padding:10px}.stat b{display:block;font-size:20px;margin-top:4px}.label{font-size:12px;color:#756a65}canvas{display:block;width:100%;height:55vh;min-height:360px;background:#fff;border:2px solid #8f6258;border-radius:14px;touch-action:none;-webkit-user-select:none;user-select:none}.actions{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}button{border:0;border-radius:10px;padding:11px 16px;font:inherit;font-weight:700;background:#8f6258;color:#fff}.secondary{background:#eee6e1;color:#302a27}.log{margin-top:12px;background:#302a27;color:#fff;border-radius:12px;padding:12px;font:12px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;max-height:180px;overflow:auto}.flash{position:fixed;width:22px;height:22px;border-radius:50%;background:#e23d28;pointer-events:none;transform:translate(-50%,-50%);z-index:9999}.note{margin-top:10px;font-size:13px;line-height:1.6;color:#756a65}@media(max-width:650px){body{padding:10px}.card{padding:12px}.stats{grid-template-columns:1fr}.title{font-size:19px}canvas{height:58vh}}
+</style>
+</head>
+<body>
+<div class="wrap"><div class="card">
+<div class="title">Apple Pencil／手指「重新落筆」延遲測試</div>
+<div class="desc">請快速寫中文字，每一劃都正常抬筆再落筆。每次瀏覽器收到 <b>pointerdown</b>，畫面會立即出現紅點，同時記錄「上一筆抬起 → 下一筆落下」的事件間隔。這個頁面沒有 Signature Pad、沒有平滑演算法、沒有圖片轉換。</div>
+<div class="stats"><div class="stat"><span class="label">目前輸入</span><b id="type">—</b></div><div class="stat"><span class="label">抬筆 → 下一次 pointerdown</span><b id="gap">—</b></div><div class="stat"><span class="label">pointerdown → 第一個 move</span><b id="moveDelay">—</b></div></div>
+<canvas id="pad"></canvas>
+<div class="actions"><button id="clear">清除畫面</button><button id="clearLog" class="secondary">清除紀錄</button></div>
+<div id="log" class="log">等待輸入…</div>
+<div class="note">判讀方式：如果 Apple Pencil 的紅點本身就慢出現，但手指紅點立即出現，延遲發生在網頁收到 Pencil 新落筆事件之前／當下；如果紅點立即出現、但線條晚出現，才是 Canvas 繪圖流程的問題。</div>
+</div></div>
+<script>
+(()=>{
+const canvas=document.getElementById('pad'),ctx=canvas.getContext('2d',{alpha:false,desynchronized:true});
+const typeEl=document.getElementById('type'),gapEl=document.getElementById('gap'),moveEl=document.getElementById('moveDelay'),logEl=document.getElementById('log');
+let rect,lastUp=null,downAt=null,active=null,lastX=0,lastY=0,gotMove=false,rows=[];
+function resize(){rect=canvas.getBoundingClientRect();canvas.width=Math.round(rect.width);canvas.height=Math.round(rect.height);ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.lineWidth=2.4;ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle='#302a27'}
+function xy(e){return{x:e.clientX-rect.left,y:e.clientY-rect.top}}
+function addLog(s){rows.unshift(s);rows=rows.slice(0,18);logEl.textContent=rows.join('\n')}
+function dot(x,y){ctx.beginPath();ctx.fillStyle='#e23d28';ctx.arc(x,y,6,0,Math.PI*2);ctx.fill();ctx.fillStyle='#302a27'}
+canvas.addEventListener('pointerdown',e=>{e.preventDefault();if(active!==null)return;const now=performance.now(),p=xy(e);active=e.pointerId;downAt=now;gotMove=false;typeEl.textContent=e.pointerType+(e.pointerType==='pen'?' (Apple Pencil)':'');const gap=lastUp===null?null:now-lastUp;gapEl.textContent=gap===null?'第一筆':gap.toFixed(1)+' ms';moveEl.textContent='等待…';dot(p.x,p.y);lastX=p.x;lastY=p.y;addLog('DOWN  '+e.pointerType.padEnd(5)+'  '+(gap===null?'第一筆':('距上一筆 '+gap.toFixed(1)+' ms')));try{canvas.setPointerCapture(e.pointerId)}catch(_){}},{passive:false});
+canvas.addEventListener('pointermove',e=>{if(e.pointerId!==active)return;e.preventDefault();const now=performance.now();if(!gotMove){gotMove=true;moveEl.textContent=(now-downAt).toFixed(1)+' ms';addLog('MOVE  '+e.pointerType.padEnd(5)+'  down→move '+(now-downAt).toFixed(1)+' ms')}const events=typeof e.getCoalescedEvents==='function'?e.getCoalescedEvents():[e];ctx.beginPath();ctx.moveTo(lastX,lastY);for(const ev of events){const p=xy(ev);ctx.lineTo(p.x,p.y);lastX=p.x;lastY=p.y}ctx.stroke()},{passive:false});
+function end(e){if(e.pointerId!==active)return;e.preventDefault();lastUp=performance.now();addLog('UP    '+e.pointerType.padEnd(5));active=null;try{canvas.releasePointerCapture(e.pointerId)}catch(_){}}
+canvas.addEventListener('pointerup',end,{passive:false});canvas.addEventListener('pointercancel',end,{passive:false});
+document.getElementById('clear').onclick=resize;document.getElementById('clearLog').onclick=()=>{rows=[];lastUp=null;gapEl.textContent='—';moveEl.textContent='—';logEl.textContent='等待輸入…'};
+window.addEventListener('resize',resize);resize();
+})();
+</script>
+</body>
+</html>
