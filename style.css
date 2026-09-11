@@ -3,6 +3,17 @@
     margin:0;background:#f6f3f0;color:#302a27;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif
   }
+  button,
+  select,
+  input,
+  textarea{
+    font-family:inherit;
+    color:#302a27;
+  }
+  button{
+    -webkit-appearance:none;
+    appearance:none;
+  }
   .wrap{max-width:1240px;margin:28px auto;padding:0 20px}
   .card{
     background:#fff;border:1px solid #e4ddd8;border-radius:18px;
@@ -19,10 +30,10 @@
   }
   .preset{
     padding:12px 10px;border:1px solid #d9d0ca;border-radius:12px;
-    background:#fff;cursor:pointer
+    background:#fff;color:#302a27;cursor:pointer
   }
-  .preset.active{border:2px solid #302a27;background:#f4efec}
-  .preset-name{display:block;font-weight:700;font-size:16px}
+  .preset.active{border:2px solid #302a27;background:#f4efec;color:#302a27}
+  .preset-name{display:block;font-weight:700;font-size:16px;color:#302a27}
   .preset-count{display:block;color:#7e746e;font-size:13px;margin-top:3px}
 
   /* 左右眼 */
@@ -57,15 +68,15 @@
   .segment-name{display:block;font-weight:700;font-size:13px;margin-bottom:4px}
   select{
     width:100%;padding:7px 5px;margin:3px 0;border:1px solid #d8cfca;
-    border-radius:8px;background:#fff;font-size:14px
+    border-radius:8px;background:#fff;color:#302a27;font-size:14px
   }
   .remove{
     width:100%;padding:6px;margin-top:4px;border:0;border-radius:7px;
-    background:#f2ece8;cursor:pointer;font-size:13px
+    background:#f2ece8;color:#6f5f57;cursor:pointer;font-size:13px
   }
   .add-eye{
     width:100%;margin-top:9px;padding:9px;border:1px dashed #bfb3ac;
-    border-radius:9px;background:#fff;cursor:pointer
+    border-radius:9px;background:#fff;color:#302a27;cursor:pointer
   }
 
   /* 紙本感欄位排列 */
@@ -108,7 +119,7 @@
   .actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
   .action{
     padding:11px 16px;border:1px solid #d6ccc6;border-radius:10px;
-    background:#fff;cursor:pointer;font-size:15px
+    background:#fff;color:#302a27;cursor:pointer;font-size:15px
   }
   .primary{background:#302a27;color:#fff;border-color:#302a27}
   pre{
@@ -326,6 +337,7 @@
     border:0;
     border-radius:8px;
     background:#f4efec;
+    color:#302a27;
     cursor:pointer;
     font-size:24px;
     line-height:1;
@@ -347,6 +359,7 @@
     border:0;
     border-radius:8px;
     background:transparent;
+    color:#302a27;
     cursor:pointer;
     font-size:14px;
   }
@@ -367,6 +380,7 @@
     border:1px solid #d7cfca;
     border-radius:8px;
     background:#fff;
+    color:#302a27;
     cursor:pointer;
   }
   @media(max-width:767px){
