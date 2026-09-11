@@ -17,9 +17,23 @@ function loadSettings() {
 }
 
 let settings = loadSettings();
+let draggedRow = null;
+let draggedKey = null;
+let touchDraggingRow = null;
+let touchDraggingKey = null;
 
 function saveSettings() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+}
+
+function saveOrderFromDom(key) {
+  const list = document.getElementById(`${key}List`);
+  if (!list) return;
+
+  settings[key] = Array.from(list.querySelectorAll('.setting-item'))
+    .map(row => row.dataset.value);
+
+  saveSettings();
 }
 
 function renderList(key) {
@@ -40,6 +54,15 @@ function renderList(key) {
   items.forEach((item, index) => {
     const row = document.createElement('div');
     row.className = 'setting-item';
+    row.draggable = true;
+    row.dataset.value = item;
+
+    const handle = document.createElement('button');
+    handle.type = 'button';
+    handle.className = 'drag-handle';
+    handle.setAttribute('aria-label', `拖曳排序 ${item}`);
+    handle.title = '拖曳排序';
+    handle.innerHTML = '<span aria-hidden="true">⋮⋮</span>';
 
     const name = document.createElement('div');
     name.className = 'item-name';
@@ -55,7 +78,66 @@ function renderList(key) {
       renderList(key);
     });
 
-    row.append(name, remove);
+    row.addEventListener('dragstart', event => {
+      draggedRow = row;
+      draggedKey = key;
+      row.classList.add('dragging');
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setData('text/plain', item);
+    });
+
+    row.addEventListener('dragend', () => {
+      row.classList.remove('dragging');
+      document.querySelectorAll('.setting-item.drag-over').forEach(el => el.classList.remove('drag-over'));
+      if (draggedKey) saveOrderFromDom(draggedKey);
+      draggedRow = null;
+      draggedKey = null;
+    });
+
+    row.addEventListener('dragover', event => {
+      if (!draggedRow || draggedKey !== key || draggedRow === row) return;
+      event.preventDefault();
+      event.dataTransfer.dropEffect = 'move';
+
+      const rect = row.getBoundingClientRect();
+      const insertAfter = event.clientY > rect.top + rect.height / 2;
+      list.insertBefore(draggedRow, insertAfter ? row.nextSibling : row);
+    });
+
+    handle.addEventListener('pointerdown', event => {
+      if (event.pointerType === 'mouse') return;
+      event.preventDefault();
+      touchDraggingRow = row;
+      touchDraggingKey = key;
+      row.classList.add('dragging', 'touch-dragging');
+      handle.setPointerCapture(event.pointerId);
+    });
+
+    handle.addEventListener('pointermove', event => {
+      if (!touchDraggingRow || touchDraggingKey !== key) return;
+      event.preventDefault();
+
+      const target = document.elementFromPoint(event.clientX, event.clientY)?.closest('.setting-item');
+      if (!target || target === touchDraggingRow || target.parentElement !== list) return;
+
+      const rect = target.getBoundingClientRect();
+      const insertAfter = event.clientY > rect.top + rect.height / 2;
+      list.insertBefore(touchDraggingRow, insertAfter ? target.nextSibling : target);
+    });
+
+    const finishTouchDrag = event => {
+      if (!touchDraggingRow || touchDraggingKey !== key) return;
+      if (handle.hasPointerCapture?.(event.pointerId)) handle.releasePointerCapture(event.pointerId);
+      touchDraggingRow.classList.remove('dragging', 'touch-dragging');
+      saveOrderFromDom(key);
+      touchDraggingRow = null;
+      touchDraggingKey = null;
+    };
+
+    handle.addEventListener('pointerup', finishTouchDrag);
+    handle.addEventListener('pointercancel', finishTouchDrag);
+
+    row.append(handle, name, remove);
     list.appendChild(row);
   });
 }
