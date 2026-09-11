@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>美睫顧客資料卡</title>
+  <link rel="stylesheet" href="customer-form.css">
+</head>
+<body>
+  <main class="form-shell">
+    <div class="form-card">
+      <div class="page-actions"><a href="index.html" class="back-link">← 返回 Dashboard</a></div>
+      <header class="form-header">
+        <h1>美睫顧客資料卡</h1>
+        <p>建立顧客基本資料、眼部狀況與美睫前確認事項。</p>
+      </header>
+
+      <form id="customerForm">
+        <section class="form-section">
+          <h2>基本資料</h2>
+          <div class="field-grid">
+            <label><span>姓名 *</span><input id="name" name="name" required placeholder="請輸入姓名"></label>
+            <label><span>手機 *</span><input id="phone" name="phone" required inputmode="tel" placeholder="09xx-xxx-xxx"></label>
+            <label><span>生日</span><input id="birthday" name="birthday" type="date"></label>
+            <label><span>LINE / 社群帳號</span><input id="social" name="social" placeholder="選填"></label>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h2>美睫狀況</h2>
+          <div class="question-list">
+            <div class="question"><span>是否曾接過睫毛？</span><div><label><input type="radio" name="lashBefore" value="是"> 是</label><label><input type="radio" name="lashBefore" value="否"> 否</label></div></div>
+            <div class="question"><span>眼睛是否容易敏感、紅腫或流淚？</span><div><label><input type="radio" name="sensitive" value="是"> 是</label><label><input type="radio" name="sensitive" value="否"> 否</label></div></div>
+            <div class="question"><span>目前是否配戴隱形眼鏡？</span><div><label><input type="radio" name="contacts" value="是"> 是</label><label><input type="radio" name="contacts" value="否"> 否</label></div></div>
+          </div>
+          <label class="full-field"><span>過敏 / 特殊狀況 / 備註</span><textarea id="notes" name="notes" placeholder="例如：膠水過敏、近期眼部手術、偏好款式等"></textarea></label>
+        </section>
+
+        <section class="form-section notice-section">
+          <h2>美睫前須知</h2>
+          <div class="notice-list">
+            <p>．施作前請卸除眼妝及睫毛膏，並保持眼周清潔。</p>
+            <p>．若近期有眼部不適、發炎、手術或嚴重過敏，請主動告知美睫師。</p>
+            <p>．接睫後如有持續刺痛、紅腫等異常反應，請儘快卸除並視情況就醫。</p>
+          </div>
+          <label class="agree-row"><input id="agree" type="checkbox" required> <span>我已詳細閱讀並了解以上注意事項。</span></label>
+          <div class="signature-row">
+            <label><span>顧客簽名</span><input id="signature" placeholder="顧客姓名 / 簽名"></label>
+            <label class="date-field"><span>簽署日期</span><input id="signDate" type="date"></label>
+          </div>
+        </section>
+
+        <div class="form-actions">
+          <a href="index.html" class="secondary-btn">取消</a>
+          <button type="submit" class="primary-btn">儲存顧客資料</button>
+        </div>
+      </form>
+    </div>
+  </main>
+  <script src="customer-form.js"></script>
+</body>
+</html>
