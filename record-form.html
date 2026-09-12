@@ -75,6 +75,14 @@
       <div class="form-row">
         <div class="form-label">睫毛種類</div>
         <div class="form-input"><input type="text" id="lashType" placeholder="請輸入睫毛種類"></div>
+        <div class="form-label">睫毛顏色</div>
+        <div class="form-input">
+          <select id="lashColor" name="lashColor">
+            <option value="">請選擇顏色</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row full-row">
         <div class="form-label">金額</div>
         <div class="form-input"><input type="text" id="amount" inputmode="decimal" placeholder="請輸入金額"></div>
       </div>
@@ -90,7 +98,7 @@
 </div>
 <script src="script.js"></script>
 <script src="sexy-preset.js?v=f8e8cd94"></script>
-<script src="record-settings.js"></script>
+<script src="record-settings.js?v=b6b4f2e5"></script>
 <script>
   const customerParams = new URLSearchParams(location.search);
   const customerName = customerParams.get('name');
