@@ -1,18 +1,34 @@
 // 將「設定」頁儲存的項目串接到美睫紀錄表。
 const RECORD_SETTINGS_KEY = 'lashRecordSettings';
 const RECORD_SETTINGS_DEFAULTS = {
-  lashStyles: ['可愛型', '性感型', '華麗型', '無辜型'],
-  lashTypes: ['YY 毛', '山茶花', '扁毛'],
-  curls: ['J', 'B', 'C', 'CC', 'D'],
-  lengths: ['8 mm', '9 mm', '10 mm', '11 mm', '12 mm', '13 mm']
+  lashStyles: ['性感型', '無辜型', '華麗型', '可愛型'],
+  lashTypes: ['松風', '赫本', '芭比'],
+  lashColors: {
+    '松風': ['matte black', 'herbal brown', 'ice mauve', 'sodalite', 'mode khaki', 'sand beige', 'ecru', 'ice white'],
+    '赫本': ['black', 'dark mocha', 'leaf', 'ash blue'],
+    '芭比': ['black', 'dark mocha']
+  },
+  curls: ['J', 'JC', 'C', 'SC', 'CC', 'L', 'LD'],
+  lengths: ['7 mm', '8 mm', '9 mm', '11 mm', '10 mm', '12 mm', '13 mm'],
+  upperLashCounts: ['80', '90', '100', '110', '120', '130', '140'],
+  lowerLashCounts: ['20', '30']
 };
 
 function loadRecordSettings() {
   try {
     const saved = JSON.parse(localStorage.getItem(RECORD_SETTINGS_KEY));
-    return saved ? { ...RECORD_SETTINGS_DEFAULTS, ...saved } : { ...RECORD_SETTINGS_DEFAULTS };
+    if (!saved) return JSON.parse(JSON.stringify(RECORD_SETTINGS_DEFAULTS));
+
+    return {
+      ...RECORD_SETTINGS_DEFAULTS,
+      ...saved,
+      lashColors: {
+        ...RECORD_SETTINGS_DEFAULTS.lashColors,
+        ...(saved.lashColors || {})
+      }
+    };
   } catch {
-    return { ...RECORD_SETTINGS_DEFAULTS };
+    return JSON.parse(JSON.stringify(RECORD_SETTINGS_DEFAULTS));
   }
 }
 
@@ -20,7 +36,7 @@ const recordSettings = loadRecordSettings();
 
 function replaceInputWithSelect(id, items) {
   const oldInput = document.getElementById(id);
-  if (!oldInput) return;
+  if (!oldInput) return null;
 
   const select = document.createElement('select');
   select.id = id;
@@ -41,11 +57,46 @@ function replaceInputWithSelect(id, items) {
   }
 
   oldInput.replaceWith(select);
+  return select;
 }
 
 // 接睫樣式、睫毛種類改成設定頁控制的下拉選單。
 replaceInputWithSelect('lashStyleText', recordSettings.lashStyles || []);
-replaceInputWithSelect('lashType', recordSettings.lashTypes || []);
+const lashTypeSelect = replaceInputWithSelect('lashType', recordSettings.lashTypes || []);
+
+// 睫毛顏色依照睫毛種類連動。
+const lashColorSelect = document.getElementById('lashColor');
+
+function renderLashColorOptions(lashType) {
+  if (!lashColorSelect) return;
+
+  lashColorSelect.innerHTML = '';
+
+  const nullOption = document.createElement('option');
+  nullOption.value = '';
+  nullOption.textContent = '請選擇顏色';
+  nullOption.selected = true;
+  lashColorSelect.appendChild(nullOption);
+
+  const colors = (recordSettings.lashColors && recordSettings.lashColors[lashType]) || [];
+  colors.forEach(color => {
+    const option = document.createElement('option');
+    option.value = color;
+    option.textContent = color;
+    lashColorSelect.appendChild(option);
+  });
+
+  // 每次重新帶入顏色時，都重置成 null 選項。
+  lashColorSelect.value = '';
+}
+
+if (lashTypeSelect && lashColorSelect) {
+  renderLashColorOptions(lashTypeSelect.value);
+
+  lashTypeSelect.addEventListener('change', () => {
+    renderLashColorOptions(lashTypeSelect.value);
+  });
+}
 
 // 左右眼的捲度與長度改讀設定頁資料。
 const configuredCurls = (recordSettings.curls || []).filter(Boolean);
@@ -106,5 +157,19 @@ document.getElementById('addRight')?.addEventListener('click', () => {
     segment.curl = firstCurl();
     segment.length = firstLength();
     renderEye('right', rightSegments);
+  }
+});
+
+// 現有測試儲存輸出補上睫毛顏色，不改動原本 script.js 的儲存流程。
+document.getElementById('save')?.addEventListener('click', () => {
+  const output = document.getElementById('output');
+  if (!output) return;
+
+  try {
+    const data = JSON.parse(output.textContent || '{}');
+    data.lashColor = lashColorSelect ? lashColorSelect.value : '';
+    output.textContent = JSON.stringify(data, null, 2);
+  } catch {
+    // 原本輸出若不是 JSON，就不額外處理。
   }
 });
