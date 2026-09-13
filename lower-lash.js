@@ -42,6 +42,21 @@
     }
     .upper-lash-count-row label{font-weight:700;font-size:14px;color:#6f625c}
     .upper-lash-count-row select{width:100%;min-height:40px}
+    .lower-lash-indicator{
+      display:none;
+      width:max-content;
+      min-width:54px;
+      margin:-6px auto 8px;
+      padding:4px 12px;
+      border-radius:999px;
+      background:#f6e5e7;
+      color:#8b3f49;
+      font-weight:800;
+      font-size:16px;
+      line-height:1.2;
+      text-align:center;
+    }
+    .lower-lash-indicator.is-visible{display:block}
     .lower-lash-optional{margin-left:6px;color:#a16d69;font-size:13px;font-weight:700}
     .lower-lash-toggle-label{
       display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;white-space:nowrap;
@@ -89,6 +104,7 @@
       .lower-lash-fields{grid-template-columns:1fr;gap:9px}
       .lower-lash-field{padding:10px}
       .lower-lash-field select{font-size:16px}
+      .lower-lash-indicator{font-size:15px;margin-top:-4px}
     }
   `;
   document.head.appendChild(style);
@@ -97,8 +113,24 @@
   const content = document.getElementById('lowerLashContent');
   const lengthSelect = document.getElementById('lowerLashLength');
   const countSelect = document.getElementById('lowerLashCount');
+  const leftEyeSvg = document.getElementById('leftEyeSvg');
+  const rightEyeSvg = document.getElementById('rightEyeSvg');
 
   if (!toggle || !content || !lengthSelect || !countSelect) return;
+
+  // 在左右眼上睫毛模型正中央下方建立下睫毛標示。
+  function createIndicator(eyeSvg, id) {
+    if (!eyeSvg || document.getElementById(id)) return document.getElementById(id);
+    const indicator = document.createElement('div');
+    indicator.id = id;
+    indicator.className = 'lower-lash-indicator';
+    indicator.setAttribute('aria-live', 'polite');
+    eyeSvg.insertAdjacentElement('afterend', indicator);
+    return indicator;
+  }
+
+  const leftIndicator = createIndicator(leftEyeSvg, 'leftLowerLashIndicator');
+  const rightIndicator = createIndicator(rightEyeSvg, 'rightLowerLashIndicator');
 
   // 前端先提供下睫毛常用長度；之後再與設定頁的動態資料串接。
   const lowerLengthOptions = [4, 5, 6, 7];
@@ -119,9 +151,22 @@
     `<option value="${value}">${value} 根</option>`
   ).join('');
 
+  function updateIndicators() {
+    const text = `M${lengthSelect.value}`;
+    [leftIndicator, rightIndicator].forEach(indicator => {
+      if (!indicator) return;
+      indicator.textContent = text;
+      indicator.classList.toggle('is-visible', toggle.checked);
+    });
+  }
+
   toggle.addEventListener('change', () => {
     content.hidden = !toggle.checked;
+    updateIndicators();
   });
+
+  lengthSelect.addEventListener('change', updateIndicators);
+  updateIndicators();
 
   // 測試儲存輸出同步補上下睫毛內容，不改原本主流程。
   document.getElementById('save')?.addEventListener('click', () => {
