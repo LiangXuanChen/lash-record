@@ -66,22 +66,19 @@
       </div>
 
       <div id="lowerLashContent" class="lower-lash-content" hidden>
-        <div class="lower-lash-brand">品牌：<strong>M</strong></div>
-        <div class="lower-eyes-grid">
-          <section class="lower-eye-panel">
-            <div class="lower-eye-title">左眼</div>
-            <div id="lowerLeftSegments" class="lower-segments"></div>
-            <button type="button" id="addLowerLeft" class="add-eye">＋ 新增左眼區域</button>
-          </section>
-          <section class="lower-eye-panel">
-            <div class="lower-eye-title">右眼</div>
-            <div id="lowerRightSegments" class="lower-segments"></div>
-            <button type="button" id="addLowerRight" class="add-eye">＋ 新增右眼區域</button>
-          </section>
-        </div>
-        <div class="lower-lash-count-row">
-          <label for="lowerLashCount">下睫毛根數</label>
-          <select id="lowerLashCount"></select>
+        <div class="lower-lash-fields">
+          <div class="lower-lash-field">
+            <span class="lower-lash-field-label">品牌</span>
+            <strong class="lower-lash-brand-value">M</strong>
+          </div>
+          <label class="lower-lash-field" for="lowerLashLength">
+            <span class="lower-lash-field-label">長度</span>
+            <select id="lowerLashLength"></select>
+          </label>
+          <label class="lower-lash-field" for="lowerLashCount">
+            <span class="lower-lash-field-label">下睫毛根數</span>
+            <select id="lowerLashCount"></select>
+          </label>
         </div>
       </div>
     </section>
@@ -140,7 +137,7 @@
 <script src="script.js"></script>
 <script src="sexy-preset.js?v=f8e8cd94"></script>
 <script src="record-settings.js?v=b6b4f2e5"></script>
-<script src="lower-lash.js?v=2"></script>
+<script src="lower-lash.js?v=3"></script>
 <script>
   const customerParams = new URLSearchParams(location.search);
   const customerName = customerParams.get('name');
