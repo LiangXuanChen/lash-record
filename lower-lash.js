@@ -29,6 +29,19 @@
       border-color:#e4ddd8;
       box-shadow:inset 0 0 0 1px rgba(255,255,255,.45);
     }
+    .upper-lash-count-row{
+      display:grid;
+      grid-template-columns:120px minmax(0,220px);
+      gap:10px;
+      align-items:center;
+      margin-top:14px;
+      padding:12px;
+      border:1px solid #e4ddd8;
+      border-radius:12px;
+      background:#fff;
+    }
+    .upper-lash-count-row label{font-weight:700;font-size:14px;color:#6f625c}
+    .upper-lash-count-row select{width:100%;min-height:40px}
     .lower-lash-optional{margin-left:6px;color:#a16d69;font-size:13px;font-weight:700}
     .lower-lash-toggle-label{
       display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;white-space:nowrap;
@@ -68,6 +81,8 @@
       .upper-lash-header{padding:13px 12px}
       .upper-lash-content{padding:12px 10px}
       .upper-lash-content .eyes-grid{gap:10px;margin:0}
+      .upper-lash-count-row{grid-template-columns:1fr;gap:5px;padding:10px}
+      .upper-lash-count-row select{font-size:16px}
       .lower-lash-header{align-items:flex-start;flex-direction:column;padding:13px 12px}
       .lower-lash-toggle-label{width:100%;justify-content:flex-start}
       .lower-lash-content{padding:12px 10px}
