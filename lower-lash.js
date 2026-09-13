@@ -45,14 +45,12 @@
     .lower-lash-indicator{
       display:none;
       width:max-content;
-      min-width:54px;
-      margin:-6px auto 8px;
-      padding:4px 12px;
-      border-radius:999px;
-      background:#f6e5e7;
-      color:#8b3f49;
-      font-weight:800;
-      font-size:16px;
+      margin:-4px auto 8px;
+      padding:0;
+      background:transparent;
+      color:#332d2a;
+      font-weight:700;
+      font-size:14px;
       line-height:1.2;
       text-align:center;
     }
@@ -104,7 +102,7 @@
       .lower-lash-fields{grid-template-columns:1fr;gap:9px}
       .lower-lash-field{padding:10px}
       .lower-lash-field select{font-size:16px}
-      .lower-lash-indicator{font-size:15px;margin-top:-4px}
+      .lower-lash-indicator{font-size:14px;margin-top:-3px}
     }
   `;
   document.head.appendChild(style);
