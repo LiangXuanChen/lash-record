@@ -1,4 +1,10 @@
 (()=>{
+  // Prevent iPhone Safari from automatically enlarging text after rotating to landscape.
+  // This keeps the same CSS font-size proportions used in portrait mode.
+  const textScaleStyle=document.createElement('style');
+  textScaleStyle.textContent='html{-webkit-text-size-adjust:100%;text-size-adjust:100%;}';
+  document.head.appendChild(textScaleStyle);
+
   function initBirthdayCalendar(){
     const display=document.getElementById('birthdayDisplay');
     const button=document.getElementById('birthdayButton');
