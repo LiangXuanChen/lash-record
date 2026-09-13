@@ -2,6 +2,7 @@
 (() => {
   const style = document.createElement('style');
   style.textContent = `
+    .upper-lash-section,
     .lower-lash-section{
       margin:0 0 24px;
       border:1px solid #e4ddd8;
@@ -9,6 +10,7 @@
       background:#fdfbf9;
       overflow:hidden;
     }
+    .upper-lash-header,
     .lower-lash-header{
       display:flex;
       align-items:center;
@@ -18,7 +20,15 @@
       background:#f7f3f0;
       border-bottom:1px solid #e4ddd8;
     }
+    .upper-lash-title,
     .lower-lash-title{font-weight:800;font-size:18px}
+    .upper-lash-content{padding:16px}
+    .upper-lash-content .eyes-grid{margin:0}
+    .upper-lash-content .eye-panel{
+      background:#fff;
+      border-color:#e4ddd8;
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.45);
+    }
     .lower-lash-optional{margin-left:6px;color:#a16d69;font-size:13px;font-weight:700}
     .lower-lash-toggle-label{
       display:flex;align-items:center;gap:8px;cursor:pointer;font-size:14px;white-space:nowrap;
@@ -53,6 +63,9 @@
     }
     .lower-lash-count-row label{font-weight:700;font-size:14px}
     @media(max-width:767px){
+      .upper-lash-header{padding:13px 12px}
+      .upper-lash-content{padding:12px 10px}
+      .upper-lash-content .eyes-grid{gap:10px;margin:0}
       .lower-lash-header{align-items:flex-start;flex-direction:column;padding:13px 12px}
       .lower-lash-toggle-label{width:100%;justify-content:flex-start}
       .lower-lash-content{padding:12px 10px}
