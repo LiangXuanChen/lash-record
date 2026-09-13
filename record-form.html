@@ -45,6 +45,40 @@
       </section>
     </div>
 
+    <section class="lower-lash-section" id="lowerLashSection">
+      <div class="lower-lash-header">
+        <div>
+          <span class="lower-lash-title">下睫毛</span>
+          <span class="lower-lash-optional">選填</span>
+        </div>
+        <label class="lower-lash-toggle-label" for="lowerLashToggle">
+          <input type="checkbox" id="lowerLashToggle">
+          <span class="lower-lash-switch" aria-hidden="true"></span>
+          <span>新增下睫毛紀錄</span>
+        </label>
+      </div>
+
+      <div id="lowerLashContent" class="lower-lash-content" hidden>
+        <div class="lower-lash-brand">品牌：<strong>M</strong></div>
+        <div class="lower-eyes-grid">
+          <section class="lower-eye-panel">
+            <div class="lower-eye-title">左眼</div>
+            <div id="lowerLeftSegments" class="lower-segments"></div>
+            <button type="button" id="addLowerLeft" class="add-eye">＋ 新增左眼區域</button>
+          </section>
+          <section class="lower-eye-panel">
+            <div class="lower-eye-title">右眼</div>
+            <div id="lowerRightSegments" class="lower-segments"></div>
+            <button type="button" id="addLowerRight" class="add-eye">＋ 新增右眼區域</button>
+          </section>
+        </div>
+        <div class="lower-lash-count-row">
+          <label for="lowerLashCount">下睫毛根數</label>
+          <select id="lowerLashCount"></select>
+        </div>
+      </div>
+    </section>
+
     <div class="record-table">
       <div class="form-row">
         <div class="form-label">日期</div>
@@ -99,6 +133,7 @@
 <script src="script.js"></script>
 <script src="sexy-preset.js?v=f8e8cd94"></script>
 <script src="record-settings.js?v=b6b4f2e5"></script>
+<script src="lower-lash.js?v=1"></script>
 <script>
   const customerParams = new URLSearchParams(location.search);
   const customerName = customerParams.get('name');
