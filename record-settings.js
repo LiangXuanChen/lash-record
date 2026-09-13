@@ -64,6 +64,27 @@ function replaceInputWithSelect(id, items) {
 replaceInputWithSelect('lashStyleText', recordSettings.lashStyles || []);
 const lashTypeSelect = replaceInputWithSelect('lashType', recordSettings.lashTypes || []);
 
+// 上睫毛根數直接讀取設定頁的 upperLashCounts。
+const upperLashCountSelect = document.getElementById('upperLashCount');
+if (upperLashCountSelect) {
+  const upperCounts = (recordSettings.upperLashCounts || []).filter(Boolean);
+  upperLashCountSelect.innerHTML = '';
+
+  if (!upperCounts.length) {
+    const option = document.createElement('option');
+    option.value = '';
+    option.textContent = '尚未設定選項';
+    upperLashCountSelect.appendChild(option);
+  } else {
+    upperCounts.forEach(value => {
+      const option = document.createElement('option');
+      option.value = String(value);
+      option.textContent = `${value} 根`;
+      upperLashCountSelect.appendChild(option);
+    });
+  }
+}
+
 // 睫毛顏色依照睫毛種類連動。
 const lashColorSelect = document.getElementById('lashColor');
 
@@ -160,7 +181,7 @@ document.getElementById('addRight')?.addEventListener('click', () => {
   }
 });
 
-// 現有測試儲存輸出補上睫毛顏色，不改動原本 script.js 的儲存流程。
+// 現有測試儲存輸出補上睫毛顏色與上睫毛根數，不改動原本 script.js 的儲存流程。
 document.getElementById('save')?.addEventListener('click', () => {
   const output = document.getElementById('output');
   if (!output) return;
@@ -168,6 +189,7 @@ document.getElementById('save')?.addEventListener('click', () => {
   try {
     const data = JSON.parse(output.textContent || '{}');
     data.lashColor = lashColorSelect ? lashColorSelect.value : '';
+    data.upperLashCount = upperLashCountSelect ? upperLashCountSelect.value : '';
     output.textContent = JSON.stringify(data, null, 2);
   } catch {
     // 原本輸出若不是 JSON，就不額外處理。
