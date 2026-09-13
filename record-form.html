@@ -28,22 +28,29 @@
       <button class="preset" data-style="innocent"><span class="preset-name">無辜型</span><span class="preset-count">4 個範圍</span></button>
     </div>
 
-    <div class="eyes-grid">
-      <section class="eye-panel">
-        <div class="eye-title">左眼</div>
-        <div id="leftEyeSvg" class="eye-svg"></div>
-        <div class="range-order-hint">*範圍由左到右排序</div>
-        <div id="leftSegments" class="segments"></div>
-        <button id="addLeft" class="add-eye">＋ 新增左眼區域</button>
-      </section>
-      <section class="eye-panel">
-        <div class="eye-title">右眼</div>
-        <div id="rightEyeSvg" class="eye-svg"></div>
-        <div class="range-order-hint">*範圍由左到右排序</div>
-        <div id="rightSegments" class="segments"></div>
-        <button id="addRight" class="add-eye">＋ 新增右眼區域</button>
-      </section>
-    </div>
+    <section class="upper-lash-section">
+      <div class="upper-lash-header">
+        <span class="upper-lash-title">上睫毛</span>
+      </div>
+      <div class="upper-lash-content">
+        <div class="eyes-grid">
+          <section class="eye-panel">
+            <div class="eye-title">左眼</div>
+            <div id="leftEyeSvg" class="eye-svg"></div>
+            <div class="range-order-hint">*範圍由左到右排序</div>
+            <div id="leftSegments" class="segments"></div>
+            <button id="addLeft" class="add-eye">＋ 新增左眼區域</button>
+          </section>
+          <section class="eye-panel">
+            <div class="eye-title">右眼</div>
+            <div id="rightEyeSvg" class="eye-svg"></div>
+            <div class="range-order-hint">*範圍由左到右排序</div>
+            <div id="rightSegments" class="segments"></div>
+            <button id="addRight" class="add-eye">＋ 新增右眼區域</button>
+          </section>
+        </div>
+      </div>
+    </section>
 
     <section class="lower-lash-section" id="lowerLashSection">
       <div class="lower-lash-header">
@@ -133,7 +140,7 @@
 <script src="script.js"></script>
 <script src="sexy-preset.js?v=f8e8cd94"></script>
 <script src="record-settings.js?v=b6b4f2e5"></script>
-<script src="lower-lash.js?v=1"></script>
+<script src="lower-lash.js?v=2"></script>
 <script>
   const customerParams = new URLSearchParams(location.search);
   const customerName = customerParams.get('name');
