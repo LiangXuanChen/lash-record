@@ -5,6 +5,20 @@
   textScaleStyle.textContent='html{-webkit-text-size-adjust:100%;text-size-adjust:100%;}';
   document.head.appendChild(textScaleStyle);
 
+  function initEyeTypeOtherClear(){
+    const otherRadio=document.getElementById('eyeTypeOther');
+    const otherText=document.getElementById('eyeTypeOtherText');
+    if(!otherRadio||!otherText)return;
+
+    document.querySelectorAll('input[name="eyeType"]').forEach(radio=>{
+      radio.addEventListener('change',()=>{
+        if(radio.checked&&radio.value!=='其他'){
+          otherText.value='';
+        }
+      });
+    });
+  }
+
   function initBirthdayCalendar(){
     const display=document.getElementById('birthdayDisplay');
     const button=document.getElementById('birthdayButton');
@@ -133,6 +147,11 @@
     render();
   }
 
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initBirthdayCalendar,{once:true});
-  else initBirthdayCalendar();
+  function init(){
+    initEyeTypeOtherClear();
+    initBirthdayCalendar();
+  }
+
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
+  else init();
 })();
