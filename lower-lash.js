@@ -45,7 +45,7 @@
     .lower-lash-indicator{
       display:none;
       width:max-content;
-      margin:-30px auto 3px;
+      margin:-20px auto 3px;
       padding:0;
       background:transparent;
       color:#332d2a;
