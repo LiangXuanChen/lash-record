@@ -1,0 +1,14 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+
+  "name": "lash-record",
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "lash-record-db",
+      "database_id": "10b5d6dc-531a-4662-ac29-aad4fc9bd825",
+      "migrations_dir": "migrations"
+    }
+  ]
+}
