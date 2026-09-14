@@ -26,8 +26,7 @@ CREATE TABLE AppUser (
     FOREIGN KEY (Modifier) REFERENCES AppUser(UserId) ON DELETE NO ACTION
 ) STRICT;
 
-CREATE INDEX IX_AppUser_IsActive_Email
-    ON AppUser(IsActive, Email);
+CREATE INDEX IX_AppUser_IsActive_Email ON AppUser(IsActive, Email);
 
 CREATE TABLE SystemCode (
     SystemCodeId TEXT PRIMARY KEY,
@@ -44,9 +43,7 @@ CREATE TABLE SystemCode (
     FOREIGN KEY (Creator) REFERENCES AppUser(UserId) ON DELETE NO ACTION,
     FOREIGN KEY (Modifier) REFERENCES AppUser(UserId) ON DELETE NO ACTION
 ) STRICT;
-
-CREATE INDEX IX_SystemCode_Type_Active_Sort
-    ON SystemCode(CodeType, IsActive, SortOrder);
+CREATE INDEX IX_SystemCode_Type_Active_Sort ON SystemCode(CodeType, IsActive, SortOrder);
 
 CREATE TABLE LashStyle (
     LashStyleId TEXT PRIMARY KEY,
@@ -60,9 +57,7 @@ CREATE TABLE LashStyle (
     FOREIGN KEY (Creator) REFERENCES AppUser(UserId) ON DELETE NO ACTION,
     FOREIGN KEY (Modifier) REFERENCES AppUser(UserId) ON DELETE NO ACTION
 ) STRICT;
-
-CREATE INDEX IX_LashStyle_Active_Sort
-    ON LashStyle(IsActive, SortOrder);
+CREATE INDEX IX_LashStyle_Active_Sort ON LashStyle(IsActive, SortOrder);
 
 CREATE TABLE LashType (
     LashTypeId TEXT PRIMARY KEY,
@@ -78,9 +73,7 @@ CREATE TABLE LashType (
     FOREIGN KEY (Creator) REFERENCES AppUser(UserId) ON DELETE NO ACTION,
     FOREIGN KEY (Modifier) REFERENCES AppUser(UserId) ON DELETE NO ACTION
 ) STRICT;
-
-CREATE INDEX IX_LashType_Position_Active_Sort
-    ON LashType(Position, IsActive, SortOrder);
+CREATE INDEX IX_LashType_Position_Active_Sort ON LashType(Position, IsActive, SortOrder);
 
 CREATE TABLE LashColor (
     LashColorId TEXT PRIMARY KEY,
@@ -97,9 +90,7 @@ CREATE TABLE LashColor (
     FOREIGN KEY (Creator) REFERENCES AppUser(UserId) ON DELETE NO ACTION,
     FOREIGN KEY (Modifier) REFERENCES AppUser(UserId) ON DELETE NO ACTION
 ) STRICT;
-
-CREATE INDEX IX_LashColor_Type_Active_Sort
-    ON LashColor(LashTypeId, IsActive, SortOrder);
+CREATE INDEX IX_LashColor_Type_Active_Sort ON LashColor(LashTypeId, IsActive, SortOrder);
 
 CREATE TABLE LashCurl (
     LashCurlId TEXT PRIMARY KEY,
@@ -113,25 +104,24 @@ CREATE TABLE LashCurl (
     FOREIGN KEY (Creator) REFERENCES AppUser(UserId) ON DELETE NO ACTION,
     FOREIGN KEY (Modifier) REFERENCES AppUser(UserId) ON DELETE NO ACTION
 ) STRICT;
+CREATE INDEX IX_LashCurl_Active_Sort ON LashCurl(IsActive, SortOrder);
 
-CREATE INDEX IX_LashCurl_Active_Sort
-    ON LashCurl(IsActive, SortOrder);
-
+-- 上、下睫毛的長度選項不同，因此以 Position 分開管理。
 CREATE TABLE LashLength (
     LashLengthId TEXT PRIMARY KEY,
-    LengthMm REAL NOT NULL UNIQUE CHECK (LengthMm > 0),
+    Position TEXT NOT NULL CHECK (Position IN ('UPPER', 'LOWER')),
+    LengthMm REAL NOT NULL CHECK (LengthMm > 0),
     SortOrder INTEGER NOT NULL CHECK (SortOrder >= 0),
     IsActive INTEGER NOT NULL DEFAULT 1 CHECK (IsActive IN (0, 1)),
     Creator TEXT NOT NULL,
     CreateDate TEXT NOT NULL,
     Modifier TEXT,
     ModifiedDate TEXT,
+    UNIQUE (Position, LengthMm),
     FOREIGN KEY (Creator) REFERENCES AppUser(UserId) ON DELETE NO ACTION,
     FOREIGN KEY (Modifier) REFERENCES AppUser(UserId) ON DELETE NO ACTION
 ) STRICT;
-
-CREATE INDEX IX_LashLength_Active_Sort
-    ON LashLength(IsActive, SortOrder);
+CREATE INDEX IX_LashLength_Position_Active_Sort ON LashLength(Position, IsActive, SortOrder);
 
 CREATE TABLE LashCountOption (
     LashCountOptionId TEXT PRIMARY KEY,
@@ -148,9 +138,7 @@ CREATE TABLE LashCountOption (
     FOREIGN KEY (Creator) REFERENCES AppUser(UserId) ON DELETE NO ACTION,
     FOREIGN KEY (Modifier) REFERENCES AppUser(UserId) ON DELETE NO ACTION
 ) STRICT;
-
-CREATE INDEX IX_LashCountOption_Position_Active_Sort
-    ON LashCountOption(Position, IsActive, SortOrder);
+CREATE INDEX IX_LashCountOption_Position_Active_Sort ON LashCountOption(Position, IsActive, SortOrder);
 
 CREATE TABLE Customer (
     CustomerId TEXT PRIMARY KEY,
@@ -158,9 +146,7 @@ CREATE TABLE Customer (
     Birthday TEXT NOT NULL,
     Phone TEXT NOT NULL,
     IsPregnant INTEGER NOT NULL CHECK (IsPregnant IN (0, 1)),
-    PregnancyWeeks INTEGER CHECK (
-        PregnancyWeeks IS NULL OR PregnancyWeeks BETWEEN 1 AND 45
-    ),
+    PregnancyWeeks INTEGER CHECK (PregnancyWeeks IS NULL OR PregnancyWeeks BETWEEN 1 AND 45),
     HasHadExtensions INTEGER NOT NULL CHECK (HasHadExtensions IN (0, 1)),
     HasFalseLashHabit INTEGER NOT NULL CHECK (HasFalseLashHabit IN (0, 1)),
     EyeTypeSystemCodeId TEXT NOT NULL,
@@ -169,32 +155,20 @@ CREATE TABLE Customer (
     HasAgreedToConsent INTEGER NOT NULL CHECK (HasAgreedToConsent IN (0, 1)),
     SignatureFileKey TEXT NOT NULL,
     SignedDate TEXT NOT NULL,
-    CreatedSource TEXT NOT NULL CHECK (
-        CreatedSource IN ('CUSTOMER_FORM', 'BACKOFFICE')
-    ),
+    CreatedSource TEXT NOT NULL CHECK (CreatedSource IN ('CUSTOMER_FORM', 'BACKOFFICE')),
     IsDeleted INTEGER NOT NULL DEFAULT 0 CHECK (IsDeleted IN (0, 1)),
     Creator TEXT,
     CreateDate TEXT NOT NULL,
     Modifier TEXT,
     ModifiedDate TEXT,
-    CHECK (
-        (IsPregnant = 0 AND PregnancyWeeks IS NULL)
-        OR
-        (IsPregnant = 1 AND PregnancyWeeks IS NOT NULL)
-    ),
+    CHECK ((IsPregnant = 0 AND PregnancyWeeks IS NULL) OR (IsPregnant = 1 AND PregnancyWeeks IS NOT NULL)),
     FOREIGN KEY (EyeTypeSystemCodeId) REFERENCES SystemCode(SystemCodeId) ON DELETE NO ACTION,
     FOREIGN KEY (Creator) REFERENCES AppUser(UserId) ON DELETE NO ACTION,
     FOREIGN KEY (Modifier) REFERENCES AppUser(UserId) ON DELETE NO ACTION
 ) STRICT;
-
-CREATE INDEX IX_Customer_Deleted_Name
-    ON Customer(IsDeleted, Name);
-
-CREATE INDEX IX_Customer_Deleted_Phone
-    ON Customer(IsDeleted, Phone);
-
-CREATE INDEX IX_Customer_EyeType
-    ON Customer(EyeTypeSystemCodeId);
+CREATE INDEX IX_Customer_Deleted_Name ON Customer(IsDeleted, Name);
+CREATE INDEX IX_Customer_Deleted_Phone ON Customer(IsDeleted, Phone);
+CREATE INDEX IX_Customer_EyeType ON Customer(EyeTypeSystemCodeId);
 
 CREATE TABLE CustomerProfileCode (
     CustomerProfileCodeId TEXT PRIMARY KEY,
@@ -211,9 +185,7 @@ CREATE TABLE CustomerProfileCode (
     FOREIGN KEY (Creator) REFERENCES AppUser(UserId) ON DELETE NO ACTION,
     FOREIGN KEY (Modifier) REFERENCES AppUser(UserId) ON DELETE NO ACTION
 ) STRICT;
-
-CREATE INDEX IX_CustomerProfileCode_SystemCode
-    ON CustomerProfileCode(SystemCodeId);
+CREATE INDEX IX_CustomerProfileCode_SystemCode ON CustomerProfileCode(SystemCodeId);
 
 CREATE TABLE LashRecord (
     LashRecordId TEXT PRIMARY KEY,
@@ -238,21 +210,11 @@ CREATE TABLE LashRecord (
     FOREIGN KEY (Creator) REFERENCES AppUser(UserId) ON DELETE NO ACTION,
     FOREIGN KEY (Modifier) REFERENCES AppUser(UserId) ON DELETE NO ACTION
 ) STRICT;
-
-CREATE INDEX IX_LashRecord_Customer_Deleted_ServiceDate
-    ON LashRecord(CustomerId, IsDeleted, ServiceDate);
-
-CREATE INDEX IX_LashRecord_Style
-    ON LashRecord(LashStyleId);
-
-CREATE INDEX IX_LashRecord_UpperType
-    ON LashRecord(UpperLashTypeId);
-
-CREATE INDEX IX_LashRecord_UpperColor
-    ON LashRecord(UpperLashColorId);
-
-CREATE INDEX IX_LashRecord_UpperCount
-    ON LashRecord(UpperLashCountOptionId);
+CREATE INDEX IX_LashRecord_Customer_Deleted_ServiceDate ON LashRecord(CustomerId, IsDeleted, ServiceDate);
+CREATE INDEX IX_LashRecord_Style ON LashRecord(LashStyleId);
+CREATE INDEX IX_LashRecord_UpperType ON LashRecord(UpperLashTypeId);
+CREATE INDEX IX_LashRecord_UpperColor ON LashRecord(UpperLashColorId);
+CREATE INDEX IX_LashRecord_UpperCount ON LashRecord(UpperLashCountOptionId);
 
 CREATE TABLE UpperLashRecordDetail (
     UpperLashRecordDetailId TEXT PRIMARY KEY,
@@ -269,15 +231,9 @@ CREATE TABLE UpperLashRecordDetail (
     FOREIGN KEY (LashLengthId) REFERENCES LashLength(LashLengthId) ON DELETE NO ACTION,
     FOREIGN KEY (Creator) REFERENCES AppUser(UserId) ON DELETE NO ACTION
 ) STRICT;
-
-CREATE INDEX IX_UpperLashRecordDetail_Record_Eye
-    ON UpperLashRecordDetail(LashRecordId, EyeSide, SegmentOrder);
-
-CREATE INDEX IX_UpperLashRecordDetail_Curl
-    ON UpperLashRecordDetail(LashCurlId);
-
-CREATE INDEX IX_UpperLashRecordDetail_Length
-    ON UpperLashRecordDetail(LashLengthId);
+CREATE INDEX IX_UpperLashRecordDetail_Record_Eye ON UpperLashRecordDetail(LashRecordId, EyeSide, SegmentOrder);
+CREATE INDEX IX_UpperLashRecordDetail_Curl ON UpperLashRecordDetail(LashCurlId);
+CREATE INDEX IX_UpperLashRecordDetail_Length ON UpperLashRecordDetail(LashLengthId);
 
 CREATE TABLE LowerLashRecordDetail (
     LowerLashRecordDetailId TEXT PRIMARY KEY,
@@ -295,18 +251,10 @@ CREATE TABLE LowerLashRecordDetail (
     FOREIGN KEY (LashCountOptionId) REFERENCES LashCountOption(LashCountOptionId) ON DELETE NO ACTION,
     FOREIGN KEY (Creator) REFERENCES AppUser(UserId) ON DELETE NO ACTION
 ) STRICT;
-
-CREATE INDEX IX_LowerLashRecordDetail_Type
-    ON LowerLashRecordDetail(LashTypeId);
-
-CREATE INDEX IX_LowerLashRecordDetail_Color
-    ON LowerLashRecordDetail(LashColorId);
-
-CREATE INDEX IX_LowerLashRecordDetail_Length
-    ON LowerLashRecordDetail(LashLengthId);
-
-CREATE INDEX IX_LowerLashRecordDetail_Count
-    ON LowerLashRecordDetail(LashCountOptionId);
+CREATE INDEX IX_LowerLashRecordDetail_Type ON LowerLashRecordDetail(LashTypeId);
+CREATE INDEX IX_LowerLashRecordDetail_Color ON LowerLashRecordDetail(LashColorId);
+CREATE INDEX IX_LowerLashRecordDetail_Length ON LowerLashRecordDetail(LashLengthId);
+CREATE INDEX IX_LowerLashRecordDetail_Count ON LowerLashRecordDetail(LashCountOptionId);
 
 CREATE TABLE CustomerFormToken (
     CustomerFormTokenId TEXT PRIMARY KEY,
@@ -317,17 +265,16 @@ CREATE TABLE CustomerFormToken (
     CreateDate TEXT NOT NULL,
     FOREIGN KEY (Creator) REFERENCES AppUser(UserId) ON DELETE NO ACTION
 ) STRICT;
-
-CREATE INDEX IX_CustomerFormToken_Expires_Used
-    ON CustomerFormToken(ExpiresAt, UsedAt);
+CREATE INDEX IX_CustomerFormToken_Expires_Used ON CustomerFormToken(ExpiresAt, UsedAt);
 
 -- 跨資料表商業規則由 Worker 驗證：
 -- 1. UpperLashTypeId 的 Position 必須為 UPPER。
 -- 2. UpperLashColorId 必須隸屬 UpperLashTypeId。
 -- 3. UpperLashCountOptionId 的 Position 必須為 UPPER。
--- 4. LowerLashRecordDetail.LashTypeId 的 Position 必須為 LOWER。
--- 5. 下睫毛 LashColorId 必須隸屬其 LashTypeId。
--- 6. 下睫毛 LashCountOptionId 的 Position 必須為 LOWER。
--- 7. CUSTOMER_FORM 建立 Customer 時 Creator 應為 NULL；
---    BACKOFFICE 建立時 Creator 應為有效 AppUser.UserId。
--- 8. EyeType 選 OTHER 時 EyeTypeOtherText 必填，否則應清空。
+-- 4. UpperLashRecordDetail.LashLengthId 的 Position 必須為 UPPER。
+-- 5. LowerLashRecordDetail.LashTypeId 的 Position 必須為 LOWER。
+-- 6. 下睫毛 LashColorId 必須隸屬其 LashTypeId。
+-- 7. LowerLashRecordDetail.LashLengthId 的 Position 必須為 LOWER。
+-- 8. 下睫毛 LashCountOptionId 的 Position 必須為 LOWER。
+-- 9. CUSTOMER_FORM 建立 Customer 時 Creator 應為 NULL；BACKOFFICE 建立時 Creator 應為有效 AppUser.UserId。
+-- 10. EyeType 選 OTHER 時 EyeTypeOtherText 必填，否則應清空。
