@@ -92,6 +92,9 @@
     .lower-lash-field-label{font-weight:700;font-size:14px;color:#6f625c}
     .lower-lash-brand-value{display:flex;align-items:center;min-height:40px;font-size:17px;color:#302a27}
     .lower-lash-field select{width:100%;min-height:40px}
+    @media(max-width:1024px){
+      .lower-lash-indicator{margin:-30px auto 3px}
+    }
     @media(max-width:767px){
       .upper-lash-header{padding:13px 12px}
       .upper-lash-content{padding:12px 10px}
@@ -104,7 +107,7 @@
       .lower-lash-fields{grid-template-columns:1fr;gap:9px}
       .lower-lash-field{padding:10px}
       .lower-lash-field select{font-size:16px}
-      .lower-lash-indicator{font-size:14px;margin:-30px auto 3px}
+      .lower-lash-indicator{font-size:14px}
     }
   `;
   document.head.appendChild(style);
