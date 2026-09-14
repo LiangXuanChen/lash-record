@@ -27,14 +27,20 @@
     .lower-lash-toggle-label input:checked+.lower-lash-switch{background:#302a27}
     .lower-lash-toggle-label input:checked+.lower-lash-switch::after{transform:translateX(20px)}
 
-    @media(min-width:768px){
-      /* 金額列雖然是 full-row，但輸入區右邊界要和日期欄位右邊界切齊。
-         record-table 的一般列是：標題 / 欄位 / 標題 / 欄位，因此金額輸入區取第一個欄位欄的寬度。 */
-      .record-table .full-row:has(#amount){grid-template-columns:var(--label-width,160px) minmax(0,1fr) 1fr}
-      .record-table .full-row:has(#amount) .form-label{grid-column:1}
-      .record-table .full-row:has(#amount) .form-input{grid-column:2;padding-right:12px}
+    /* 平板／電腦：金額列維持和原 record-table 相同的第一組欄寬。
+       一般列為 130px / 1fr / 130px / 1fr，
+       所以金額輸入區寬度直接取第一個 1fr，右邊就會和日期欄位切齊。 */
+    @media(min-width:1024px){
+      .record-table .full-row:has(#amount){grid-template-columns:130px calc((100% - 260px)/2) 1fr}
+      .record-table .full-row:has(#amount) .form-input{padding-right:12px;border-right:1px solid #ded7d2}
       #amount{width:100%}
     }
+    @media(min-width:768px) and (max-width:1023px){
+      .record-table .full-row:has(#amount){grid-template-columns:120px calc((100% - 240px)/2) 1fr}
+      .record-table .full-row:has(#amount) .form-input{padding-right:12px;border-right:1px solid #ded7d2}
+      #amount{width:100%}
+    }
+
     @media(max-width:1024px){
       .lower-lash-indicator{margin:-30px auto 3px}
       .lower-lash-fields.four-cols{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -46,8 +52,8 @@
       .lower-lash-indicator{font-size:14px}
       .lash-setting-card{padding:12px}
       .lash-setting-card select,.lash-setting-card input{font-size:16px}
-      .record-table .full-row:has(#amount){grid-template-columns:1fr}
-      .record-table .full-row:has(#amount) .form-label,.record-table .full-row:has(#amount) .form-input{grid-column:auto}
+      .record-table .full-row:has(#amount){display:block}
+      .record-table .full-row:has(#amount) .form-input{border:0;padding:0 0 8px}
       #amount{width:100%}
     }
   `;
