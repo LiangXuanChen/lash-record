@@ -50,7 +50,7 @@
           </section>
         </div>
         <div class="upper-lash-count-row">
-          <label for="upperLashCount">上睫毛根數</label>
+          <label for="upperLashCount">上睫毛本數</label>
           <select id="upperLashCount" name="upperLashCount"></select>
         </div>
       </div>
@@ -80,7 +80,7 @@
             <select id="lowerLashLength"></select>
           </label>
           <label class="lower-lash-field" for="lowerLashCount">
-            <span class="lower-lash-field-label">下睫毛根數</span>
+            <span class="lower-lash-field-label">下睫毛本數</span>
             <select id="lowerLashCount"></select>
           </label>
         </div>
@@ -126,7 +126,7 @@
       </div>
       <div class="form-row full-row">
         <div class="form-label">金額</div>
-        <div class="form-input"><input type="text" id="amount" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="請輸入金額" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div>
+        <div class="form-input"><input type="text" id="amount" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="依本數自動帶入，可自行修改" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div>
       </div>
       <div class="form-row full-row">
         <div class="form-label">消費內容 / 備註</div>
@@ -141,7 +141,8 @@
 <script src="script.js"></script>
 <script src="sexy-preset.js?v=f8e8cd94"></script>
 <script src="record-settings.js?v=3"></script>
-<script src="lower-lash.js?v=8"></script>
+<script src="lower-lash.js?v=10"></script>
+<script src="price-calculator.js?v=1"></script>
 <script>
   const customerParams = new URLSearchParams(location.search);
   const customerName = customerParams.get('name');
