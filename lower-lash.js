@@ -27,6 +27,9 @@
     .lower-lash-toggle-label input:checked+.lower-lash-switch{background:#302a27}
     .lower-lash-toggle-label input:checked+.lower-lash-switch::after{transform:translateX(20px)}
 
+    @media(min-width:768px){
+      #amount{width:50%}
+    }
     @media(max-width:1024px){
       .lower-lash-indicator{margin:-30px auto 3px}
       .lower-lash-fields.four-cols{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -38,6 +41,7 @@
       .lower-lash-indicator{font-size:14px}
       .lash-setting-card{padding:12px}
       .lash-setting-card select,.lash-setting-card input{font-size:16px}
+      #amount{width:100%}
     }
   `;
   document.head.appendChild(style);
