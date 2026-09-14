@@ -10,80 +10,22 @@
 <div class="wrap">
   <div class="card">
     <div style="margin-bottom:12px"><a href="index.html" style="color:#6f625c;text-decoration:none;font-size:14px">← 返回 Dashboard</a></div>
-    <div class="record-header">
-      <h1 class="record-title">美睫紀錄表</h1>
-      <div class="dashed-separator"></div>
-      <div class="customer-row">
-        <span class="customer-label">姓名：</span>
-        <span id="customerName" class="customer-name">王小美</span>
-      </div>
-      <div class="dashed-separator"></div>
-    </div>
-
+    <div class="record-header"><h1 class="record-title">美睫紀錄表</h1><div class="dashed-separator"></div><div class="customer-row"><span class="customer-label">姓名：</span><span id="customerName" class="customer-name">王小美</span></div><div class="dashed-separator"></div></div>
     <div class="preset-title">款式預設</div>
-    <div class="preset-grid">
-      <button class="preset active" data-style="cute"><span class="preset-name">可愛型</span><span class="preset-count">3 個範圍</span></button>
-      <button class="preset" data-style="sexy"><span class="preset-name">性感型</span><span class="preset-count">2 個範圍</span></button>
-      <button class="preset" data-style="glamour"><span class="preset-name">華麗型</span><span class="preset-count">2 個範圍</span></button>
-      <button class="preset" data-style="innocent"><span class="preset-name">無辜型</span><span class="preset-count">4 個範圍</span></button>
-    </div>
-
-    <section class="upper-lash-section">
-      <div class="upper-lash-header"><span class="upper-lash-title">上睫毛</span></div>
-      <div class="upper-lash-content">
-        <div class="eyes-grid">
-          <section class="eye-panel"><div class="eye-title">左眼</div><div id="leftEyeSvg" class="eye-svg"></div><div class="range-order-hint">*範圍由左到右排序</div><div id="leftSegments" class="segments"></div><button id="addLeft" class="add-eye">＋ 新增左眼區域</button></section>
-          <section class="eye-panel"><div class="eye-title">右眼</div><div id="rightEyeSvg" class="eye-svg"></div><div class="range-order-hint">*範圍由左到右排序</div><div id="rightSegments" class="segments"></div><button id="addRight" class="add-eye">＋ 新增右眼區域</button></section>
-        </div>
-        <div class="upper-lash-count-row"><label for="upperLashCount">上睫毛本數</label><select id="upperLashCount" name="upperLashCount"></select></div>
-      </div>
-    </section>
-
-    <section class="lower-lash-section" id="lowerLashSection">
-      <div class="lower-lash-header">
-        <div><span class="lower-lash-title">下睫毛</span><span class="lower-lash-optional">選填</span></div>
-        <label class="lower-lash-toggle-label" for="lowerLashToggle"><input type="checkbox" id="lowerLashToggle"><span class="lower-lash-switch" aria-hidden="true"></span><span>新增下睫毛紀錄</span></label>
-      </div>
-      <div id="lowerLashContent" class="lower-lash-content" hidden>
-        <div class="lower-lash-fields">
-          <div class="lower-lash-field"><span class="lower-lash-field-label">品牌</span><strong class="lower-lash-brand-value">M</strong></div>
-          <label class="lower-lash-field" for="lowerLashLength"><span class="lower-lash-field-label">長度</span><select id="lowerLashLength"></select></label>
-          <label class="lower-lash-field" for="lowerLashCount"><span class="lower-lash-field-label">下睫毛本數</span><select id="lowerLashCount"></select></label>
-        </div>
-      </div>
-    </section>
-
+    <div class="preset-grid"><button class="preset active" data-style="cute"><span class="preset-name">可愛型</span><span class="preset-count">3 個範圍</span></button><button class="preset" data-style="sexy"><span class="preset-name">性感型</span><span class="preset-count">2 個範圍</span></button><button class="preset" data-style="glamour"><span class="preset-name">華麗型</span><span class="preset-count">2 個範圍</span></button><button class="preset" data-style="innocent"><span class="preset-name">無辜型</span><span class="preset-count">4 個範圍</span></button></div>
+    <section class="upper-lash-section"><div class="upper-lash-header"><span class="upper-lash-title">上睫毛</span></div><div class="upper-lash-content"><div class="eyes-grid"><section class="eye-panel"><div class="eye-title">左眼</div><div id="leftEyeSvg" class="eye-svg"></div><div class="range-order-hint">*範圍由左到右排序</div><div id="leftSegments" class="segments"></div><button id="addLeft" class="add-eye">＋ 新增左眼區域</button></section><section class="eye-panel"><div class="eye-title">右眼</div><div id="rightEyeSvg" class="eye-svg"></div><div class="range-order-hint">*範圍由左到右排序</div><div id="rightSegments" class="segments"></div><button id="addRight" class="add-eye">＋ 新增右眼區域</button></section></div><div class="upper-lash-count-row"><label for="upperLashCount">上睫毛本數</label><select id="upperLashCount" name="upperLashCount"></select></div></div></section>
+    <section class="lower-lash-section" id="lowerLashSection"><div class="lower-lash-header"><div><span class="lower-lash-title">下睫毛</span><span class="lower-lash-optional">選填</span></div><label class="lower-lash-toggle-label" for="lowerLashToggle"><input type="checkbox" id="lowerLashToggle"><span class="lower-lash-switch" aria-hidden="true"></span><span>新增下睫毛紀錄</span></label></div><div id="lowerLashContent" class="lower-lash-content" hidden><div class="lower-lash-fields"><div class="lower-lash-field"><span class="lower-lash-field-label">品牌</span><strong class="lower-lash-brand-value">M</strong></div><label class="lower-lash-field" for="lowerLashLength"><span class="lower-lash-field-label">長度</span><select id="lowerLashLength"></select></label><label class="lower-lash-field" for="lowerLashCount"><span class="lower-lash-field-label">下睫毛本數</span><select id="lowerLashCount"></select></label></div></div></section>
     <div class="record-table">
-      <div class="form-row">
-        <div class="form-label">日期</div>
-        <div class="form-input"><div class="roc-date-wrap"><input type="text" id="rocDateDisplay" class="roc-date-input" readonly aria-label="日期" placeholder="請選擇日期"><button type="button" id="rocDateButton" class="calendar-button" aria-label="選擇日期"><svg class="calendar-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2v3M17 2v3M4.5 8.5h15M6 4.5h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-12a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 12h2M12 12h2M16 12h0M8 16h2M12 16h2M16 16h0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><div id="rocCalendar" class="roc-calendar" hidden><div class="calendar-header"><button type="button" id="prevMonth" class="calendar-nav">‹</button><div id="calendarTitle" class="calendar-title"></div><button type="button" id="nextMonth" class="calendar-nav">›</button></div><div class="calendar-week"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div><div id="calendarDays" class="calendar-days"></div><button type="button" id="todayButton" class="today-button">今天</button></div></div></div>
-        <div class="form-label">接睫樣式</div><div class="form-input"><input type="text" id="lashStyleText" placeholder="請輸入接睫樣式"></div>
-      </div>
-      <div class="form-row">
-        <div class="form-label">上睫毛種類</div><div class="form-input"><input type="text" id="lashType" placeholder="請輸入上睫毛種類"></div>
-        <div class="form-label">上睫毛顏色</div><div class="form-input"><select id="lashColor" name="lashColor"><option value="">請選擇顏色</option></select></div>
-      </div>
-      <div class="form-row full-row" id="lowerLashSummaryRow" hidden>
-        <div class="form-label">下睫毛種類</div>
-        <div class="form-input"><select id="lowerLashTypeSummary" name="lowerLashTypeSummary"></select></div>
-      </div>
+      <div class="form-row"><div class="form-label">日期</div><div class="form-input"><div class="roc-date-wrap"><input type="text" id="rocDateDisplay" class="roc-date-input" readonly aria-label="日期" placeholder="請選擇日期"><button type="button" id="rocDateButton" class="calendar-button" aria-label="選擇日期"><svg class="calendar-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2v3M17 2v3M4.5 8.5h15M6 4.5h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-12a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 12h2M12 12h2M16 12h0M8 16h2M12 16h2M16 16h0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button><div id="rocCalendar" class="roc-calendar" hidden><div class="calendar-header"><button type="button" id="prevMonth" class="calendar-nav">‹</button><div id="calendarTitle" class="calendar-title"></div><button type="button" id="nextMonth" class="calendar-nav">›</button></div><div class="calendar-week"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div><div id="calendarDays" class="calendar-days"></div><button type="button" id="todayButton" class="today-button">今天</button></div></div></div><div class="form-label">接睫樣式</div><div class="form-input"><input type="text" id="lashStyleText" placeholder="請輸入接睫樣式"></div></div>
+      <div class="form-row"><div class="form-label">上睫毛種類</div><div class="form-input"><input type="text" id="lashType" placeholder="請輸入上睫毛種類"></div><div class="form-label">上睫毛顏色</div><div class="form-input"><select id="lashColor" name="lashColor"><option value="">請選擇顏色</option></select></div></div>
+      <div class="form-row" id="lowerLashSummaryRow" hidden><div class="form-label">下睫毛種類</div><div class="form-input"><select id="lowerLashTypeSummary" name="lowerLashTypeSummary"></select></div><div class="form-label">下睫毛顏色</div><div class="form-input"><select id="lowerLashColorSummary" name="lowerLashColorSummary"><option value="">請選擇顏色</option></select></div></div>
       <div class="form-row full-row"><div class="form-label">金額</div><div class="form-input"><input type="text" id="amount" inputmode="numeric" pattern="[0-9]*" autocomplete="off" placeholder="依本數自動帶入，可自行修改" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div></div>
       <div class="form-row full-row"><div class="form-label">消費內容 / 備註</div><div class="form-input"><textarea id="note" placeholder="請輸入消費內容或備註"></textarea></div></div>
     </div>
-
-    <div class="actions"><button id="save" class="action primary">儲存施作紀錄（測試）</button></div>
-    <pre id="output">尚未儲存</pre>
+    <div class="actions"><button id="save" class="action primary">儲存施作紀錄（測試）</button></div><pre id="output">尚未儲存</pre>
   </div>
 </div>
-<script src="script.js"></script>
-<script src="sexy-preset.js?v=f8e8cd94"></script>
-<script src="record-settings.js?v=4"></script>
-<script src="lower-lash.js?v=11"></script>
-<script src="price-calculator.js?v=1"></script>
-<script>
-  const customerParams = new URLSearchParams(location.search);
-  const customerName = customerParams.get('name');
-  if(customerName){ document.getElementById('customerName').textContent = customerName; }
-</script>
+<script src="script.js"></script><script src="sexy-preset.js?v=f8e8cd94"></script><script src="record-settings.js?v=4"></script><script src="lower-lash.js?v=12"></script><script src="price-calculator.js?v=1"></script>
+<script>const customerParams=new URLSearchParams(location.search);const customerName=customerParams.get('name');if(customerName){document.getElementById('customerName').textContent=customerName;}</script>
 </body>
 </html>
