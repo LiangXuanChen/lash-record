@@ -5,6 +5,10 @@
   "main": "src/worker.js",
   "compatibility_date": "2026-09-15",
 
+  "vars": {
+    "FRONTEND_URL": "https://liangxuanchen.github.io/lash-record/"
+  },
+
   "d1_databases": [
     {
       "binding": "DB",
