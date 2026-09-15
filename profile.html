@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>個人資料｜Warmth Lash 後台</title>
+  <link rel="stylesheet" href="profile.css">
+  <script src="auth.js"></script>
+</head>
+<body>
+  <header class="profile-topbar">
+    <a class="brand" href="index.html" aria-label="返回 Warmth Lash 後台">
+      <span class="brand-mark">W</span>
+      <span><strong>Warmth Lash 後台</strong><small>Lash Studio Dashboard</small></span>
+    </a>
+    <a class="back-link" href="index.html">← 返回工作台</a>
+  </header>
+
+  <main class="profile-page">
+    <section class="profile-card">
+      <div class="profile-heading">
+        <p class="eyebrow">ACCOUNT PROFILE</p>
+        <h1>個人資料</h1>
+        <p>設定工作台顯示的名稱與頭像文字。</p>
+      </div>
+
+      <form id="profileForm" novalidate>
+        <div class="avatar-section">
+          <div id="avatarPreview" class="avatar-preview" aria-label="頭像預覽">店</div>
+          <div>
+            <strong>頭像預覽</strong>
+            <p>可使用 1～2 個中文字、英文字母或 Emoji。</p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="displayName">顯示名稱</label>
+          <input id="displayName" name="displayName" type="text" maxlength="40" autocomplete="name" required>
+        </div>
+
+        <div class="field">
+          <label for="email">Google 帳號</label>
+          <input id="email" name="email" type="email" readonly>
+          <small>登入帳號由 Google 驗證，無法在這裡修改。</small>
+        </div>
+
+        <div class="field">
+          <label for="avatarText">頭像顯示</label>
+          <input id="avatarText" name="avatarText" type="text" maxlength="4" inputmode="text" required>
+          <div class="avatar-options" aria-label="快速選擇頭像">
+            <button type="button" data-avatar="暖">暖</button>
+            <button type="button" data-avatar="W">W</button>
+            <button type="button" data-avatar="店">店</button>
+            <button type="button" data-avatar="✨">✨</button>
+            <button type="button" data-avatar="🤎">🤎</button>
+          </div>
+        </div>
+
+        <div id="profileStatus" class="profile-status" role="status" aria-live="polite"></div>
+        <button id="saveProfile" class="save-button" type="submit">儲存個人資料</button>
+      </form>
+    </section>
+  </main>
+
+  <script src="profile.js"></script>
+</body>
+</html>

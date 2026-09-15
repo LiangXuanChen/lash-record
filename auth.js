@@ -94,7 +94,7 @@
     const logoutElement = document.getElementById("logoutLink");
 
     if (nameElement) nameElement.textContent = displayName;
-    if (avatarElement) avatarElement.textContent = Array.from(displayName)[0] || "店";
+    if (avatarElement) avatarElement.textContent = user.avatarText || Array.from(displayName)[0] || "店";
     if (logoutElement) logoutElement.href = LOGOUT_URL;
 
     window.lashCurrentUser = user;

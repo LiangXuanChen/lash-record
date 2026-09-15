@@ -22,6 +22,18 @@ export default {
         }
         return withCors(await currentUser(request, env), request, env);
       }
+      if (url.pathname === "/api/profile") {
+        if (request.method === "OPTIONS") {
+          return withCors(new Response(null, { status: 204 }), request, env);
+        }
+        if (request.method === "GET") {
+          return withCors(await currentUser(request, env), request, env);
+        }
+        if (request.method === "PATCH") {
+          return withCors(await updateProfile(request, env), request, env);
+        }
+        return withCors(jsonError("Method not allowed", 405), request, env);
+      }
       if (url.pathname === "/auth/google" && request.method === "GET") {
         return startGoogleLogin(url, env);
       }
@@ -187,21 +199,7 @@ async function findAuthorizedUser(env, googleSubject, email) {
 }
 
 async function currentUser(request, env) {
-  const token = getCookie(request, SESSION_COOKIE);
-  const session = token && env.SESSION_SECRET
-    ? await verifySession(token, env.SESSION_SECRET)
-    : null;
-
-  if (!session) {
-    return jsonError("Unauthorized", 401);
-  }
-
-  const user = await env.DB.prepare(
-    `SELECT UserId, Email, DisplayName FROM AppUser
-     WHERE UserId = ? AND GoogleSubject = ? AND IsActive = 1 LIMIT 1`
-  )
-    .bind(session.userId, session.googleSubject)
-    .first();
+  const user = await authenticatedUser(request, env);
 
   if (!user) {
     return jsonError("Unauthorized", 401);
@@ -209,12 +207,88 @@ async function currentUser(request, env) {
 
   return Response.json({
     authenticated: true,
+    user: userResponse(user)
+  });
+}
+
+async function updateProfile(request, env) {
+  if (!isAllowedOrigin(request, env)) {
+    return jsonError("Forbidden", 403);
+  }
+  if (!(request.headers.get("Content-Type") || "").startsWith("application/json")) {
+    return jsonError("Content-Type must be application/json", 415);
+  }
+
+  const user = await authenticatedUser(request, env);
+  if (!user) {
+    return jsonError("Unauthorized", 401);
+  }
+
+  let input;
+  try {
+    input = await request.json();
+  } catch {
+    return jsonError("Invalid JSON", 400);
+  }
+
+  const displayName = typeof input.displayName === "string"
+    ? input.displayName.trim()
+    : "";
+  const avatarText = typeof input.avatarText === "string"
+    ? input.avatarText.trim()
+    : "";
+
+  if (!displayName || displayName.length > 40) {
+    return jsonError("Display name must be between 1 and 40 characters", 400);
+  }
+  if (!avatarText || graphemes(avatarText).length > 2) {
+    return jsonError("Avatar text must be between 1 and 2 characters", 400);
+  }
+
+  await env.DB.prepare(
+    `UPDATE AppUser
+     SET DisplayName = ?, AvatarText = ?, Modifier = UserId, ModifiedDate = ?
+     WHERE UserId = ? AND IsActive = 1`
+  )
+    .bind(displayName, avatarText, taipeiTimestamp(), user.UserId)
+    .run();
+
+  return Response.json({
+    ok: true,
     user: {
       userId: user.UserId,
       email: user.Email,
-      displayName: user.DisplayName
+      displayName,
+      avatarText
     }
   });
+}
+
+async function authenticatedUser(request, env) {
+  const token = getCookie(request, SESSION_COOKIE);
+  const session = token && env.SESSION_SECRET
+    ? await verifySession(token, env.SESSION_SECRET)
+    : null;
+
+  if (!session) {
+    return null;
+  }
+
+  return env.DB.prepare(
+    `SELECT UserId, Email, DisplayName, AvatarText FROM AppUser
+     WHERE UserId = ? AND GoogleSubject = ? AND IsActive = 1 LIMIT 1`
+  )
+    .bind(session.userId, session.googleSubject)
+    .first();
+}
+
+function userResponse(user) {
+  return {
+    userId: user.UserId,
+    email: user.Email,
+    displayName: user.DisplayName,
+    avatarText: user.AvatarText || graphemes(user.DisplayName)[0] || "店"
+  };
 }
 
 function logout(env) {
@@ -246,12 +320,28 @@ function withCors(response, request, env) {
   if (requestOrigin === allowedOrigin) {
     response.headers.set("Access-Control-Allow-Origin", allowedOrigin);
     response.headers.set("Access-Control-Allow-Credentials", "true");
-    response.headers.set("Access-Control-Allow-Methods", "GET, OPTIONS");
+    response.headers.set("Access-Control-Allow-Methods", "GET, PATCH, OPTIONS");
     response.headers.set("Access-Control-Allow-Headers", "Content-Type");
     response.headers.append("Vary", "Origin");
   }
 
   return response;
+}
+
+function isAllowedOrigin(request, env) {
+  try {
+    return request.headers.get("Origin") === new URL(frontendUrl(env)).origin;
+  } catch {
+    return false;
+  }
+}
+
+function graphemes(value) {
+  if (typeof Intl.Segmenter === "function") {
+    const segmenter = new Intl.Segmenter("zh-Hant", { granularity: "grapheme" });
+    return Array.from(segmenter.segment(value), ({ segment }) => segment);
+  }
+  return Array.from(value);
 }
 
 function redirect(location, cookies) {
