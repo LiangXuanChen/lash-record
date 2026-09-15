@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 300" role="img" aria-labelledby="title desc">
+  <title id="title">WARMTH Lash Design Studio</title>
+  <desc id="desc">Warmth Lash Design Studio 品牌橫幅</desc>
+  <defs>
+    <filter id="paper" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="3" seed="12" result="noise"/>
+      <feColorMatrix in="noise" type="saturate" values="0" result="gray"/>
+      <feComponentTransfer in="gray" result="faded">
+        <feFuncA type="table" tableValues="0 0.08"/>
+      </feComponentTransfer>
+      <feBlend in="SourceGraphic" in2="faded" mode="multiply"/>
+    </filter>
+  </defs>
+  <rect width="960" height="300" rx="32" fill="#d9cfc0" filter="url(#paper)"/>
+  <text x="480" y="143" text-anchor="middle" fill="#fffdf9" font-family="Arial, Helvetica, sans-serif" font-size="62" font-weight="500" letter-spacing="12">WARMTH</text>
+  <text x="480" y="194" text-anchor="middle" fill="#665b53" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="500" letter-spacing="15">LASH DESIGN STUDIO</text>
+</svg>
