@@ -2,6 +2,8 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
 
   "name": "lash-record",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-09-15",
 
   "d1_databases": [
     {
