@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>美睫工作台</title>
   <link rel="stylesheet" href="dashboard.css">
+  <link rel="stylesheet" href="auth-ui.css">
+  <script src="auth.js"></script>
 </head>
 <body>
 <div class="app">
@@ -13,7 +15,16 @@
       <div class="logo">L</div>
       <div><div class="brand-title">美睫工作台</div><div class="brand-sub">Lash Studio Dashboard</div></div>
     </div>
-    <div class="top-actions"><div id="todayDate" class="date-pill"></div><div class="avatar">店主</div></div>
+    <div class="top-actions">
+      <div id="todayDate" class="date-pill"></div>
+      <div class="account-menu">
+        <div id="userAvatar" class="avatar" aria-hidden="true">店</div>
+        <div class="account-copy">
+          <span id="userDisplayName" class="account-name">讀取中</span>
+          <a id="logoutLink" class="logout-link" href="https://lash-record.lxstudio.workers.dev/auth/logout">登出</a>
+        </div>
+      </div>
+    </div>
   </header>
 
   <div class="layout">
