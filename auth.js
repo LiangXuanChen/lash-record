@@ -11,8 +11,10 @@
     html.auth-required body { margin: 0; visibility: visible; }
     .auth-screen { min-height: 100vh; display: grid; place-items: center; padding: 24px; background: #f4efeb; color: #302a27; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "Microsoft JhengHei", sans-serif; }
     .auth-card { width: min(460px, 100%); overflow: hidden; border: 1px solid #e7ddd7; border-radius: 22px; background: #fffdfb; box-shadow: 0 18px 50px rgba(79, 59, 48, .12); text-align: center; }
+    .auth-brand-wrap { position: relative; height: 168px; overflow: hidden; background: #d8d0c3; }
     .auth-brand-banner { width: 100%; height: 145px; display: block; object-fit: cover; }
-    .auth-content { padding: 30px 28px 34px; }
+    .auth-brand-wrap::after { content: ""; position: absolute; left: -8%; bottom: -58px; width: 116%; height: 92px; border-radius: 50% 50% 0 0 / 100% 100% 0 0; background: #fffdfb; }
+    .auth-content { padding: 8px 28px 34px; }
     .auth-card h1 { margin: 0; font-size: 27px; letter-spacing: .02em; }
     .auth-subtitle { margin: 8px 0 0; color: #746861; font-size: 16px; font-weight: 700; }
     .auth-message { margin: 22px 0 24px; color: #8a7f78; font-size: 14px; line-height: 1.7; }
@@ -21,8 +23,10 @@
     .auth-note { display: block; margin-top: 16px; color: #9a8d86; font-size: 12px; }
     @media (max-width: 520px) {
       .auth-screen { padding: 18px; }
+      .auth-brand-wrap { height: 148px; }
       .auth-brand-banner { height: 125px; }
-      .auth-content { padding: 26px 22px 30px; }
+      .auth-brand-wrap::after { bottom: -57px; height: 88px; }
+      .auth-content { padding: 8px 22px 30px; }
       .auth-card h1 { font-size: 25px; }
     }
   `;
@@ -73,7 +77,9 @@
     document.body.innerHTML = `
       <main class="auth-screen">
         <section class="auth-card" aria-labelledby="authTitle">
-          <img class="auth-brand-banner" src="warmth-logo.svg" alt="WARMTH Lash Design Studio">
+          <div class="auth-brand-wrap">
+            <img class="auth-brand-banner" src="warmth-logo.svg" alt="WARMTH Lash Design Studio">
+          </div>
           <div class="auth-content">
             <h1 id="authTitle">Warmth Lash 後台</h1>
             <div class="auth-subtitle">Warmth Lash 後台登入頁面</div>
