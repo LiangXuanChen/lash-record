@@ -154,4 +154,8 @@
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
   else init();
+
+  const paperSignatureScript=document.createElement('script');
+  paperSignatureScript.src='paper-signature.js?v=1';
+  document.head.appendChild(paperSignatureScript);
 })();
